@@ -1,13 +1,13 @@
 # ANSARI LOADER ACCESS CONTROL LIST
 # Format: [license_key]:[allowed_cheats_separated_by_commas]
-# Available Cheats: Brutal Bypass, Internal Bypass, Silent Aim, Internal X86, Silent Internal
+# Available Cheats: Brutal Panel, Internal Panel, Silent Internal Panel, Basic Panel, Silent Cover APK, Aimkill APK, UID Bypass, Internal X86 Panel
 # -------------------------------------------------------------
 
 # Default Admin Key (Unlocked All)
-ansari:Brutal Bypass,Internal Bypass,Silent Aim,Internal X86,Silent Internal
+ansari:Brutal Panel,Internal Panel,Silent Internal Panel,Basic Panel,Silent Cover APK,Aimkill APK,UID Bypass,Internal X86 Panel
 
-# Demo Key (Only Silent Aim and Silent Internal)
-demo123:Silent Aim,Silent Internal
+# Demo Key
+demo123:Silent Internal Panel,Aimkill APK
 
-# Trial Key (Only Brutal Bypass)
-trial99:Brutal Bypass
+# Trial Key
+trial99:Brutal Panel
