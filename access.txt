@@ -1,0 +1,13 @@
+# ANSARI LOADER ACCESS CONTROL LIST
+# Format: [license_key]:[allowed_cheats_separated_by_commas]
+# Available Cheats: Brutal Bypass, Internal Bypass, Silent Aim, Internal X86, Silent Aim 2.0
+# -------------------------------------------------------------
+
+# Default Admin Key (Unlocked All)
+ansari:Brutal Bypass,Internal Bypass,Silent Aim,Internal X86,Silent Aim 2.0
+
+# Demo Key (Only Silent Aim and Silent Aim 2.0)
+demo123:Silent Aim,Silent Aim 2.0
+
+# Trial Key (Only Brutal Bypass)
+trial99:Brutal Bypass
