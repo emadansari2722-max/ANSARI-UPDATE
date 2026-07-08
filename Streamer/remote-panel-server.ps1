@@ -110,9 +110,13 @@ function Reset-WebPanelState {
 }
 
 function Write-WebClientHeartbeat {
-    if (-not (Test-AuthLoggedIn)) { return }
+    Touch-WebClientSession
+}
+
+function Touch-WebClientSession {
     $clientAlive = Join-Path $stateDir 'web_client_alive.txt'
     Set-Content -Path $clientAlive -Value (Get-Date -Format 'yyyy-MM-ddTHH:mm:ss') -Encoding UTF8
+    Clear-WebOfflineFlag
 }
 
 function Clear-WebOfflineFlag {
@@ -175,9 +179,59 @@ function Get-SchemaJson {
     return (@{ controls = $controls } | ConvertTo-Json -Depth 6 -Compress)
 }
 
+function Get-GameConnectionStatus {
+    $hbFiles = @(
+        (Join-Path $stateDir 'game_heartbeat.txt'),
+        (Join-Path $env:APPDATA 'BlazeXiter\game_heartbeat.txt')
+    )
+    $connected = $false
+    $loginOk = $false
+    $heartbeatAt = ''
+    $secondsAgo = -1
+    $message = 'Pehle Inject Panel dabao'
+    $liveSeconds = 8
+    $loginSeconds = 90
+
+    foreach ($hbFile in $hbFiles) {
+        if (-not (Test-Path $hbFile)) { continue }
+        try {
+            $raw = (Get-Content $hbFile -Raw).Trim()
+            $hb = [datetime]::Parse($raw)
+            $age = [int]((Get-Date) - $hb).TotalSeconds
+            if ($secondsAgo -lt 0 -or $age -lt $secondsAgo) {
+                $secondsAgo = $age
+                $heartbeatAt = $raw
+            }
+        } catch { }
+    }
+
+    if ($secondsAgo -ge 0) {
+        if ($secondsAgo -lt $liveSeconds) {
+            $connected = $true
+            $loginOk = $true
+            $message = 'Game connected — sync chal raha hai'
+        }
+        elseif ($secondsAgo -lt $loginSeconds) {
+            $loginOk = $true
+            $message = "Game slow signal — ${secondsAgo}s pehle (login try karo)"
+        }
+        else {
+            $message = "Game offline — last signal ${secondsAgo}s pehle — dubara Inject dabao"
+        }
+    }
+
+    return @{
+        connected    = $connected
+        login_ok     = $loginOk
+        heartbeat_at = $heartbeatAt
+        seconds_ago  = $secondsAgo
+        message      = $message
+    }
+}
+
 function Test-DllConnected {
     $conn = Get-GameConnectionStatus
-    return [bool]$conn.connected
+    return [bool]$conn.login_ok
 }
 
 function Clear-PendingLogin($message) {
@@ -217,9 +271,13 @@ function Get-AuthStatus {
 }
 
 function Test-AuthLoggedIn {
-    if (-not $script:WebSessionAuthed) { return $false }
     $auth = Get-AuthStatus
-    return [bool]$auth.logged_in
+    if ([bool]$auth.logged_in) {
+        $script:WebSessionAuthed = $true
+        return $true
+    }
+    if ($script:WebLoginPending) { return $true }
+    return $false
 }
 
 function Clear-WebSession {
@@ -274,90 +332,50 @@ function Get-InjectStatusPayload {
     }
 }
 
-function Get-GameConnectionStatus {
-    $hbFile = Join-Path $stateDir 'game_heartbeat.txt'
-    $connected = $false
-    $heartbeatAt = ''
-    $secondsAgo = -1
-    $message = 'Pehle Inject Panel dabao'
-
-    if (Test-Path $hbFile) {
-        try {
-            $raw = (Get-Content $hbFile -Raw).Trim()
-            $hb = [datetime]::Parse($raw)
-            $secondsAgo = [int]((Get-Date) - $hb).TotalSeconds
-            $heartbeatAt = $raw
-            if ($secondsAgo -lt 5) {
-                $connected = $true
-                $message = 'Game connected — sync chal raha hai'
-            }
-            else {
-                $message = "Game offline — last signal ${secondsAgo}s pehle"
-            }
-        }
-        catch {
-            $message = 'Heartbeat file invalid — DLL dubara inject karo'
-        }
-    }
-
-  return @{
-        connected = $connected
-        heartbeat_at = $heartbeatAt
-        seconds_ago = $secondsAgo
-        message = $message
-    }
-}
-
 function Get-HtmlPage {
     @'
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><title>Ansari Cheats</title>
-<style>:root{--bg:#0b0f14;--card:#121820;--accent:#0096ff;--text:#e8eef5;--muted:#7f8b99;--border:#1f2a36;--ok:#3ddc84;--bad:#ff5c5c;--wait:#f0b429}*{box-sizing:border-box;margin:0;padding:0}body{font-family:Segoe UI,system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}.hidden{display:none!important}.wrap{min-height:100vh;padding:16px;max-width:420px;margin:0 auto}.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:12px}h1{font-size:1.2rem;margin-bottom:4px}.sub{color:var(--muted);font-size:.8rem;margin-bottom:12px;line-height:1.4}.connbox{border-radius:12px;padding:12px;border:1px solid var(--border);background:#0d1218;margin-bottom:12px}.connbox.ok{border-color:rgba(61,220,132,.5)}.connbox.bad{border-color:rgba(255,92,92,.45)}.connrow{display:flex;align-items:center;gap:10px;margin-bottom:6px}.dot{width:12px;height:12px;border-radius:50%;background:var(--bad)}.dot.ok{background:var(--ok)}.conn-title{font-weight:700;font-size:.95rem}.conn-msg{font-size:.78rem;color:var(--muted)}.steps{margin:10px 0;padding:0;list-style:none}.step{display:flex;align-items:center;gap:8px;padding:7px 9px;margin-bottom:5px;border-radius:8px;background:#0d1218;font-size:.78rem;color:var(--muted);border:1px solid var(--border)}.step .ico{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;background:#2a3440;flex-shrink:0}.step.active{color:var(--text);border-color:rgba(0,150,255,.45)}.step.active .ico{background:var(--accent);color:#fff}.step.done{color:var(--ok)}.step.done .ico{background:var(--ok);color:#001}.step.err{color:var(--bad)}.step.err .ico{background:var(--bad);color:#fff}.btn{width:100%;border:none;background:var(--accent);color:#fff;border-radius:10px;padding:13px;font-size:.95rem;font-weight:700;margin-top:6px}.btn:disabled{opacity:.45}.btn.secondary{background:#2a3440;margin-top:8px}.status-box{margin-top:10px;padding:11px;border-radius:10px;font-size:.82rem;border:1px solid var(--border);background:#0d1218;color:var(--muted);min-height:40px}.status-box.wait{color:var(--wait);border-color:rgba(240,180,41,.4)}.status-box.ok{color:var(--ok);border-color:rgba(61,220,132,.45)}.status-box.bad{color:var(--bad);border-color:rgba(255,92,92,.45)}.field{margin:12px 0 8px}.field label{display:block;font-size:.75rem;color:var(--muted);margin-bottom:5px}.field input{width:100%;background:#0d1218;border:1px solid var(--border);border-radius:10px;padding:11px;color:var(--text);font-size:.92rem}.remember{display:flex;align-items:center;gap:8px;font-size:.82rem;color:var(--muted);margin:8px 0}.app header{padding:16px;position:sticky;top:0;background:rgba(11,15,20,.95);border-bottom:1px solid var(--border)}.tabs{display:flex;gap:8px;overflow:auto;padding:12px 16px}.tab{padding:8px 14px;border-radius:999px;background:var(--card);border:1px solid var(--border);color:var(--muted);font-size:.85rem}.tab.active{background:var(--accent);border-color:var(--accent);color:#fff}main{padding:0 16px 80px}.row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}.row:last-child{border-bottom:none}.switch{position:relative;width:48px;height:28px}.switch input{opacity:0;width:0;height:0}.slider-sw{position:absolute;cursor:pointer;inset:0;background:#2a3440;border-radius:999px}.slider-sw:before{content:"";position:absolute;height:22px;width:22px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.2s}input:checked+.slider-sw{background:var(--accent)}input:checked+.slider-sw:before{transform:translateX(20px)}input[type=range]{width:100%;accent-color:var(--accent)}select{background:#1a2330;color:var(--text);border:1px solid var(--border);border-radius:8px;padding:8px}footer{position:fixed;left:0;right:0;bottom:0;padding:12px 16px;background:rgba(11,15,20,.95);border-top:1px solid var(--border)}.foot-status{font-size:.8rem;color:var(--muted);text-align:center}.foot-status.ok{color:var(--ok)}.foot-status.bad{color:var(--bad)}</style></head>
+<style>:root{--bg:#0b0f14;--card:#121820;--accent:#0096ff;--text:#e8eef5;--muted:#7f8b99;--border:#1f2a36;--ok:#3ddc84;--bad:#ff5c5c;--wait:#f0b429}*{box-sizing:border-box;margin:0;padding:0}body{font-family:Segoe UI,system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}.hidden{display:none!important}.wrap{padding:16px;max-width:420px;margin:0 auto}.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:12px}h1{font-size:1.3rem;margin-bottom:4px}.sub{color:var(--muted);font-size:.8rem;margin-bottom:14px}.btn{width:100%;border:none;background:var(--accent);color:#fff;border-radius:12px;padding:15px;font-size:1rem;font-weight:700;margin-top:8px}.btn:disabled{opacity:.45}.btn.inject{font-size:1.1rem;padding:18px}.btn.secondary{background:#2a3440;font-size:.9rem;padding:12px}.field{margin:14px 0}.field label{display:block;font-size:.75rem;color:var(--muted);margin-bottom:6px}.field input{width:100%;background:#0d1218;border:1px solid var(--border);border-radius:10px;padding:12px;color:var(--text);font-size:1rem}.status-box{margin-top:10px;padding:12px;border-radius:10px;font-size:.85rem;border:1px solid var(--border);background:#0d1218;color:var(--muted)}.status-box.ok{color:var(--ok)}.status-box.bad{color:var(--bad)}.status-box.wait{color:var(--wait)}.connbox{border-radius:12px;padding:12px;border:1px solid var(--border);background:#0d1218;margin-bottom:10px}.connbox.ok{border-color:rgba(61,220,132,.5)}.connbox.bad{border-color:rgba(255,92,92,.45)}.connrow{display:flex;align-items:center;gap:10px}.dot{width:10px;height:10px;border-radius:50%;background:var(--bad)}.dot.ok{background:var(--ok)}.conn-title{font-weight:700}.conn-msg{font-size:.78rem;color:var(--muted);margin-top:4px}.tabs{display:flex;gap:8px;overflow:auto;padding:8px 0 12px}.tab{padding:8px 14px;border-radius:999px;background:var(--card);border:1px solid var(--border);color:var(--muted);font-size:.85rem;white-space:nowrap}.tab.active{background:var(--accent);border-color:var(--accent);color:#fff}.row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}.row:last-child{border-bottom:none}.switch{position:relative;width:48px;height:28px;flex-shrink:0}.switch input{opacity:0;width:0;height:0}.slider-sw{position:absolute;cursor:pointer;inset:0;background:#2a3440;border-radius:999px}.slider-sw:before{content:"";position:absolute;height:22px;width:22px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.2s}input:checked+.slider-sw{background:var(--accent)}input:checked+.slider-sw:before{transform:translateX(20px)}input[type=range]{width:100%;accent-color:var(--accent)}select{background:#1a2330;color:var(--text);border:1px solid var(--border);border-radius:8px;padding:8px}main{padding-bottom:24px}</style></head>
 <body>
-<div id="homeView" class="wrap">
+<div id="loginView" class="wrap">
 <div class="card">
 <h1>Ansari Cheats</h1>
-<div class="sub">Emulator + Free Fire kholo → Inject Panel → License login</div>
-<div class="connbox bad" id="homeConn"><div class="connrow"><div class="dot" id="homeDot"></div><div class="conn-title" id="homeConnTitle">NOT CONNECTED</div></div><div class="conn-msg" id="homeConnMsg">Inject Panel dabao</div></div>
-<ul class="steps" id="injectSteps">
-<li class="step" data-step="downloading"><span class="ico">1</span><span>DLL Download</span></li>
-<li class="step" data-step="waiting_emulator"><span class="ico">2</span><span>Emulator</span></li>
-<li class="step" data-step="injecting"><span class="ico">3</span><span>Inject</span></li>
-<li class="step" data-step="injected"><span class="ico">4</span><span>Done</span></li>
-</ul>
-<button class="btn" id="injectBtn">Inject Panel</button>
-<div class="status-box" id="injectStatus">Ready — Inject dabao</div>
+<div class="sub">License key daalo — login ke baad panel khulega</div>
 <div class="field"><label>License Key</label><input id="licenseKey" type="text" placeholder="ansari / 66" autocomplete="off"></div>
-<label class="remember"><input id="rememberMe" type="checkbox" checked> Remember Me</label>
-<button class="btn secondary" id="loginBtn">Login</button>
-<div class="status-box" id="loginMsg" style="margin-top:8px;min-height:20px"></div>
+<button class="btn" id="loginBtn">Login</button>
+<div class="status-box" id="loginMsg" style="min-height:20px;margin-top:12px"></div>
 </div></div>
-<div id="appView" class="hidden"><header><h1>Remote Control</h1><div class="sub" id="subtitle">Logged in</div><button class="btn secondary" id="logoutBtn" style="margin:12px 16px;width:calc(100% - 32px)">Logout</button></header>
-<div class="wrap" style="padding-top:0"><div class="card"><div class="connbox bad" id="connBox"><div class="connrow"><div class="dot" id="connDot"></div><div class="conn-title" id="connTitle">NOT CONNECTED</div></div><div class="conn-msg" id="connMsg">Checking...</div></div>
-<button class="btn" id="reconnectBtn" style="margin-top:10px">Reconnect Panel</button></div></div>
-<div class="tabs" id="tabs"></div><main id="main"></main><footer><div class="foot-status" id="status">Ready</div></footer></div>
+<div id="mainView" class="hidden">
+<div class="wrap">
+<div class="card">
+<h1>Ansari Cheats</h1>
+<div class="sub">Emulator + Free Fire lobby kholo</div>
+<div class="connbox bad" id="connBox"><div class="connrow"><div class="dot" id="connDot"></div><div class="conn-title" id="connTitle">NOT CONNECTED</div></div><div class="conn-msg" id="connMsg">Inject DLL dabao</div></div>
+<button class="btn inject" id="injectBtn">Inject DLL</button>
+<div class="status-box" id="injectStatus">Ready</div>
+<button class="btn secondary" id="logoutBtn">Logout</button>
+</div>
+<div class="tabs" id="tabs"></div>
+<main id="main"></main>
+</div></div>
 <script>
 let schema=[],values={},activeTab='Control',loggedIn=false,pollTimer=null,injectTimer=null;
-const STEP_ORDER=['downloading','waiting_emulator','injecting','injected'];
 async function api(p,o){const r=await fetch(p,o);if(!r.ok)throw 0;return r.json()}
 function el(t,a={},k=[]){const n=document.createElement(t);Object.entries(a).forEach(([x,v])=>{if(x==='class')n.className=v;else if(x==='text')n.textContent=v;else n[x]=v});k.forEach(c=>n.appendChild(c));return n}
-function showHome(){document.getElementById('homeView').classList.remove('hidden');document.getElementById('appView').classList.add('hidden');if(pollTimer){clearInterval(pollTimer);pollTimer=null}}
-function showApp(){document.getElementById('homeView').classList.add('hidden');document.getElementById('appView').classList.remove('hidden')}
-function updateSteps(state,isError){const idx=STEP_ORDER.indexOf(state);document.querySelectorAll('#injectSteps .step').forEach(li=>{const s=li.dataset.step;li.classList.remove('active','done','err');const si=STEP_ORDER.indexOf(s);if(isError&&state===s)li.classList.add('err');else if(si<idx)li.classList.add('done');else if(si===idx&&state!=='idle'&&state!=='error')li.classList.add('active');else if(state==='injected'&&s==='injected')li.classList.add('done')})}
-function setHomeConn(gc,msg){const box=document.getElementById('homeConn');const dot=document.getElementById('homeDot');box.className='connbox '+(gc?'ok':'bad');dot.className='dot'+(gc?' ok':'');document.getElementById('homeConnTitle').textContent=gc?'CONNECTED':'NOT CONNECTED';document.getElementById('homeConnMsg').textContent=msg||''}
-function updateInjectUI(s){const box=document.getElementById('injectStatus');const btn=document.getElementById('injectBtn');const busy=['downloading','waiting_emulator','injecting','reconnecting'].includes(s.state);btn.disabled=busy;box.textContent=s.message||'';const gc=!!s.game_connected||s.state==='injected';setHomeConn(gc,s.connection_message||s.message||'');if(s.state==='error'){box.className='status-box bad';updateSteps('downloading',true);btn.textContent='Retry Inject'}else if(s.state==='injected'||s.success){box.className='status-box ok';updateSteps('injected',false);btn.textContent='Inject Panel'}else if(busy){box.className='status-box wait';updateSteps(s.state,false);btn.textContent='Injecting...'}else{box.className='status-box';btn.textContent='Inject Panel';if(s.state==='idle')document.querySelectorAll('#injectSteps .step').forEach(li=>li.classList.remove('active','done','err'))}}
-async function pollInject(){try{const s=await api('/api/inject/status');updateInjectUI(s)}catch(e){}}
-document.getElementById('injectBtn').onclick=async()=>{const box=document.getElementById('injectStatus');const btn=document.getElementById('injectBtn');btn.disabled=true;box.className='status-box wait';box.textContent='Inject shuru...';try{const r=await api('/api/inject',{method:'POST'});box.textContent=r.message||'Inject shuru';if(!injectTimer)injectTimer=setInterval(pollInject,800);pollInject()}catch(e){box.className='status-box bad';box.textContent='Fail — PC par RESTART-PANEL.bat (Admin) chalao';btn.disabled=false}};
-document.getElementById('loginBtn').onclick=async()=>{const key=document.getElementById('licenseKey').value.trim();const remember=document.getElementById('rememberMe').checked;const msg=document.getElementById('loginMsg');if(!key){msg.textContent='Key daalo';msg.className='status-box bad';return}msg.className='status-box wait';msg.textContent='Login check...';try{const r=await api('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({key,remember})});if(r.ok===false){msg.className='status-box bad';msg.textContent=r.message||'Login fail';return}let tries=0;const t=setInterval(async()=>{tries++;try{const a=await api('/api/auth/status');msg.textContent=a.message||'';if(a.logged_in){loggedIn=true;clearInterval(t);showApp();bootApp();return}if(!a.pending&&tries>2){clearInterval(t);msg.className='status-box bad'}if(tries>25){clearInterval(t);msg.className='status-box bad';msg.textContent=a.message||'DLL offline — dubara Inject dabao'}}catch(e){}},1000)}catch(e){msg.className='status-box bad';msg.textContent='Server error'}};
-function updateConnection(st){const gc=!!st.game_connected;document.getElementById('connBox').className='connbox '+(gc?'ok':'bad');document.getElementById('connDot').className='dot'+(gc?' ok':'');document.getElementById('connTitle').textContent=gc?'CONNECTED':'NOT CONNECTED';document.getElementById('connMsg').textContent=st.connection_message||st.inject_message||'';document.getElementById('status').textContent=gc?'CONNECTED — Game + Web OK':'NOT CONNECTED';document.getElementById('status').className='foot-status '+(gc?'ok':'bad');document.getElementById('reconnectBtn').disabled=['downloading','waiting_emulator','injecting','reconnecting'].includes(st.inject_state||'')}
-async function setValue(id,val){values[id]=val;await api('/api/set',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id,value:val})})}
+function showLogin(){document.getElementById('loginView').classList.remove('hidden');document.getElementById('mainView').classList.add('hidden');if(pollTimer){clearInterval(pollTimer);pollTimer=null}}
+function showMain(){document.getElementById('loginView').classList.add('hidden');document.getElementById('mainView').classList.remove('hidden')}
+function updateConn(st){const gc=!!st.game_connected;document.getElementById('connBox').className='connbox '+(gc?'ok':'bad');document.getElementById('connDot').className='dot'+(gc?' ok':'');document.getElementById('connTitle').textContent=gc?'CONNECTED':'NOT CONNECTED';document.getElementById('connMsg').textContent=st.connection_message||st.inject_message||'';const box=document.getElementById('injectStatus');const busy=['downloading','waiting_emulator','injecting'].includes(st.inject_state||'');document.getElementById('injectBtn').disabled=busy;box.textContent=st.inject_message||'';if(st.inject_state==='injected'||gc){box.className='status-box ok'}else if(busy){box.className='status-box wait'}else{box.className='status-box'}}
+async function pollInject(){try{const s=await api('/api/inject/status');updateConn({game_connected:s.game_connected,connection_message:s.connection_message,inject_state:s.state,inject_message:s.message})}catch(e){}}
+document.getElementById('injectBtn').onclick=async()=>{const box=document.getElementById('injectStatus');const btn=document.getElementById('injectBtn');btn.disabled=true;box.className='status-box wait';box.textContent='Inject shuru...';try{await api('/api/inject',{method:'POST'});if(!injectTimer)injectTimer=setInterval(pollInject,1000);pollInject()}catch(e){box.className='status-box bad';box.textContent='Inject fail';btn.disabled=false}};
+document.getElementById('loginBtn').onclick=async()=>{const key=document.getElementById('licenseKey').value.trim();const msg=document.getElementById('loginMsg');if(!key){msg.textContent='Key daalo';msg.className='status-box bad';return}msg.className='status-box wait';msg.textContent='Login...';try{const r=await api('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({key,remember:true})});if(r.ok===false){msg.className='status-box bad';msg.textContent=r.message||'Fail';return}loggedIn=true;showMain();bootApp();if(!injectTimer)injectTimer=setInterval(pollInject,1500);let tries=0;const t=setInterval(async()=>{tries++;try{const a=await api('/api/auth/status');if(a.logged_in){clearInterval(t);return}if(tries>30)clearInterval(t)}catch(e){}},1000)}catch(e){msg.className='status-box bad';msg.textContent='Server error'}};
 function renderTabs(){const h=document.getElementById('tabs');h.innerHTML='';[...new Set(schema.map(c=>c.tab))].forEach(tab=>h.appendChild(el('button',{class:'tab'+(tab===activeTab?' active':''),text:tab,onclick:()=>{activeTab=tab;renderTabs();renderControls()}})))}
-function renderControls(){const m=document.getElementById('main');m.innerHTML='';const card=el('div',{class:'card'});schema.filter(c=>c.tab===activeTab).forEach(c=>{const row=el('div',{class:'row'});row.appendChild(el('div',{text:c.label}));if(c.type==='bool'||c.type==='setting'&&c.id!=='max_fps'){const w=el('label',{class:'switch'});const i=el('input',{type:'checkbox'});i.checked=!!values[c.id];i.onchange=()=>setValue(c.id,i.checked);w.appendChild(i);w.appendChild(el('span',{class:'slider-sw'}));row.appendChild(w)}else if(c.type==='float'||c.id==='max_fps'){const w=el('div');const i=el('input',{type:'range',min:c.min,max:c.max,step:c.id.includes('strength')?0.01:1,value:values[c.id]??c.min});const t=el('div',{text:String(values[c.id]??c.min)});i.oninput=()=>t.textContent=i.value;i.onchange=()=>setValue(c.id,parseFloat(i.value));w.appendChild(i);w.appendChild(t);row.appendChild(w)}else if(c.type==='combo'){const s=el('select');(c.options||[]).forEach((o,j)=>s.appendChild(el('option',{value:String(j),text:o})));s.value=String(values[c.id]??0);s.onchange=()=>setValue(c.id,parseInt(s.value,10));row.appendChild(s)}card.appendChild(row)});m.appendChild(card)}
-async function refresh(){const st=await api('/api/state');values=st.values||{};updateConnection(st);renderControls()}
-document.getElementById('reconnectBtn').onclick=async()=>{try{await api('/api/reconnect',{method:'POST'});setTimeout(refresh,1000)}catch(e){}};
-async function bootApp(){schema=(await api('/api/schema')).controls||[];renderTabs();await refresh();if(!pollTimer)pollTimer=setInterval(refresh,2000)}
-async function boot(){showHome();try{await fetch('/api/logout',{method:'POST'})}catch(e){}try{const s=await api('/api/inject/status');updateInjectUI(s);if(s.state==='injected'){const a=await api('/api/auth/status');if(a.logged_in){loggedIn=true;showApp();bootApp();return}}}catch(e){}if(!injectTimer)injectTimer=setInterval(pollInject,1500)}
-document.getElementById('logoutBtn').onclick=async()=>{loggedIn=false;try{await fetch('/api/logout',{method:'POST'})}catch(e){}showHome();boot()};
+function renderControls(){const m=document.getElementById('main');m.innerHTML='';const card=el('div',{class:'card'});schema.filter(c=>c.tab===activeTab).forEach(c=>{const row=el('div',{class:'row'});row.appendChild(el('div',{text:c.label}));if(c.type==='bool'||(c.type==='setting'&&c.id!=='max_fps')){const w=el('label',{class:'switch'});const i=el('input',{type:'checkbox'});i.checked=!!values[c.id];i.onchange=()=>setValue(c.id,i.checked);w.appendChild(i);w.appendChild(el('span',{class:'slider-sw'}));row.appendChild(w)}else if(c.type==='float'||c.id==='max_fps'){const w=el('div');const i=el('input',{type:'range',min:c.min,max:c.max,step:c.id.includes('strength')?0.01:1,value:values[c.id]??c.min});const t=el('div',{text:String(values[c.id]??c.min)});i.oninput=()=>t.textContent=i.value;i.onchange=()=>setValue(c.id,parseFloat(i.value));w.appendChild(i);w.appendChild(t);row.appendChild(w)}else if(c.type==='combo'){const s=el('select');(c.options||[]).forEach((o,j)=>s.appendChild(el('option',{value:String(j),text:o})));s.value=String(values[c.id]??0);s.onchange=()=>setValue(c.id,parseInt(s.value,10));row.appendChild(s)}card.appendChild(row)});m.appendChild(card)}
+async function setValue(id,val){values[id]=val;await api('/api/set',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id,value:val})})}
+async function refresh(){const st=await api('/api/state');values=st.values||{};updateConn(st);renderControls()}
+async function bootApp(){try{schema=(await api('/api/schema')).controls||[];renderTabs();await refresh();if(!pollTimer)pollTimer=setInterval(refresh,2000)}catch(e){document.getElementById('main').innerHTML='<div class="card"><div class="status-box bad">Panel load fail — refresh karo</div></div>'}}
+async function boot(){try{const a=await api('/api/auth/status');if(a.logged_in){loggedIn=true;showMain();bootApp();if(!injectTimer)injectTimer=setInterval(pollInject,1500);pollInject();return}}catch(e){}showLogin()}
+document.getElementById('logoutBtn').onclick=async()=>{loggedIn=false;try{await fetch('/api/logout',{method:'POST'})}catch(e){}showLogin()};
 boot();
 </script></body></html>
 '@
@@ -423,18 +441,21 @@ while ($listener.IsListening) {
     }
 
     if ($method -eq 'GET' -and ($path -eq '/' -or $path -eq '/index.html')) {
+        Touch-WebClientSession
         Send-Response $res 200 'text/html; charset=utf-8' (Get-HtmlPage)
         continue
     }
 
     if ($method -eq 'GET' -and $path -eq '/api/auth/status') {
+        Touch-WebClientSession
         [void](Test-PendingLoginTimeout)
         $auth = Get-AuthStatus
+        if ([bool]$auth.logged_in) { $script:WebSessionAuthed = $true }
         if ($script:WebLoginPending -and [bool]$auth.logged_in) {
             $script:WebSessionAuthed = $true
             $script:WebLoginPending = $false
         }
-        $loggedIn = $script:WebSessionAuthed -and [bool]$auth.logged_in
+        $loggedIn = [bool]$auth.logged_in
         $payload = @{
             logged_in = $loggedIn
             pending = [bool]$auth.pending
@@ -491,12 +512,14 @@ while ($listener.IsListening) {
     }
 
     if ($method -eq 'GET' -and $path -eq '/api/inject/status') {
+        Touch-WebClientSession
         $payload = Get-InjectStatusPayload | ConvertTo-Json -Compress
         Send-Response $res 200 'application/json' $payload
         continue
     }
 
     if ($method -eq 'POST' -and $path -eq '/api/login') {
+        Touch-WebClientSession
         $reader = New-Object System.IO.StreamReader($req.InputStream, $req.ContentEncoding)
         $body = $reader.ReadToEnd()
         $reader.Close()
@@ -509,19 +532,19 @@ while ($listener.IsListening) {
                 Send-Response $res 200 'application/json' '{"ok":false,"message":"Enter license key"}'
                 continue
             }
-            if (-not (Test-DllConnected)) {
-                Write-AuthStatusFile $false $false 'Game DLL offline — pehle Inject OK hona chahiye'
-                $payload = @{ ok = $false; message = 'Game DLL connect nahi — emulator kholo, Inject dabao, phir login' } | ConvertTo-Json -Compress
-                Send-Response $res 200 'application/json' $payload
-                continue
-            }
             $request = @{ key = $key; remember = $remember } | ConvertTo-Json -Compress
             [System.IO.File]::WriteAllText($authRequestFile, $request, (New-Object System.Text.UTF8Encoding $false))
             $script:WebSessionAuthed = $false
             $script:WebLoginPending = $true
             $script:WebLoginStartedAt = Get-Date
-            Write-AuthStatusFile $false $true 'License check ho rahi hai...'
-            Send-Response $res 200 'application/json' '{"ok":true,"pending":true}'
+            if (Test-DllConnected) {
+                Write-AuthStatusFile $false $true 'License check ho rahi hai...'
+                Send-Response $res 200 'application/json' '{"ok":true,"pending":true}'
+            } else {
+                Write-AuthStatusFile $false $true 'Pehle Inject DLL dabao — phir login complete hoga'
+                $payload = @{ ok = $true; pending = $true; needs_inject = $true; message = 'Login saved — ab Inject DLL dabao' } | ConvertTo-Json -Compress
+                Send-Response $res 200 'application/json' $payload
+            }
         }
         catch {
             Send-Response $res 200 'application/json' '{"ok":false}'
@@ -539,7 +562,7 @@ while ($listener.IsListening) {
     }
 
     if ($method -eq 'GET' -and ($path -eq '/api/state' -or $path -eq '/api/check')) {
-        if (Test-AuthLoggedIn) { Write-WebClientHeartbeat }
+        Touch-WebClientSession
         $auth = Get-AuthStatus
         $lan = Get-LanIp
         $conn = Get-GameConnectionStatus

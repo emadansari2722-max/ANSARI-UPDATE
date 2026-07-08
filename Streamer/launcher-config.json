@@ -8,7 +8,7 @@
   "keyauth_var_version_id": "streamer_version",
   "keyauth_var_url_id": "streamer_url",
   "fallback_version": "1.5",
-  "fallback_dll_url": "https://github.com/emadansari2722-max/ANSARI-UPDATE/raw/refs/heads/main/streamer.zip",
+  "fallback_dll_url": "https://github.com/emadansari2722-max/ANSARI-UPDATE/raw/refs/heads/main/Streamer/Streamer.dll",
   "emulator_processes": ["HD-Player", "MSIAppPlayer", "BlueStacks", "Nox", "LdVBoxHeadless"],
   "web_panel_port": 8765
 }

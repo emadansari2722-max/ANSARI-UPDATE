@@ -37,17 +37,47 @@ function Get-LanIp {
     return '192.168.1.1'
 }
 
-# Pehle se chal raha ho to dubara mat chalao — sirf is port ke liye
-if (-not (Test-PortOpen $port)) {
+function Test-NewPanelUi([int]$p) {
+    try {
+        $html = (Invoke-WebRequest "http://127.0.0.1:$p/" -UseBasicParsing -TimeoutSec 4).Content
+        return ($html -match 'id="loginView"' -and $html -match 'Inject DLL')
+    } catch { return $false }
+}
+
+function Start-PanelServer {
     Start-Process powershell.exe -ArgumentList @(
         '-NoProfile', '-WindowStyle', 'Hidden', '-ExecutionPolicy', 'Bypass',
         '-File', "`"$serverScript`""
     ) -WindowStyle Hidden
-
     for ($i = 0; $i -lt 15; $i++) {
-        if (Test-PortOpen $port) { break }
+        if ((Test-PortOpen $port) -and (Test-NewPanelUi $port)) { return $true }
         Start-Sleep -Milliseconds 500
     }
+    return $false
+}
+
+$restartScript = Join-Path $scriptDir 'restart-panel.ps1'
+$needsRestart = $false
+if (Test-PortOpen $port) {
+    if (-not (Test-NewPanelUi $port)) { $needsRestart = $true }
+} else {
+    [void](Start-PanelServer)
+}
+
+if ($needsRestart -and (Test-Path $restartScript)) {
+    $elevated = $false
+    try {
+        $proc = Start-Process powershell.exe -Verb RunAs -ArgumentList @(
+            '-NoProfile', '-ExecutionPolicy', 'Bypass',
+            '-File', "`"$restartScript`"", '-Silent'
+        ) -PassThru -Wait -WindowStyle Hidden
+        $elevated = ($proc.ExitCode -eq 0)
+    } catch { }
+    if (-not $elevated) {
+        [void](Start-PanelServer)
+    }
+} elseif ($needsRestart) {
+    [void](Start-PanelServer)
 }
 
 $lanIp = Get-LanIp

@@ -475,6 +475,17 @@ function Send-ShutdownSignal {
     Write-Log 'Shutdown signal sent'
 }
 
+function Clear-StaleDllSignals {
+    foreach ($p in @(
+        "$blazeDir\shutdown.flag",
+        "$blazeDir\game_heartbeat.txt",
+        "$blazeDir\web_offline.flag"
+    )) {
+        if (Test-Path $p) { Remove-Item $p -Force -ErrorAction SilentlyContinue }
+    }
+    Write-Log 'Cleared stale DLL signal files'
+}
+
 function Watch-EmulatorExit($process, $names) {
     $watchedPid = [int]$process.Id
     Write-Log "Watching emulator pid=$watchedPid"
@@ -522,8 +533,8 @@ function Find-EmulatorProcess($names) {
 function Invoke-LightReconnectCleanup {
     Send-ShutdownSignal
     Start-Sleep -Seconds 2
-    $hb = "$env:APPDATA\AnsariCheats\game_heartbeat.txt"
-    if (Test-Path $hb) { Remove-Item $hb -Force -ErrorAction SilentlyContinue }
+    Wait-ForDllUnload | Out-Null
+    Clear-StaleDllSignals
     Write-Log 'Light cleanup for reconnect'
 }
 
@@ -611,6 +622,8 @@ function Invoke-Cleanup {
     foreach ($p in $paths) {
         if (Test-Path $p) { Remove-Item $p -Force -ErrorAction SilentlyContinue }
     }
+    $shutdown = "$blazeDir\shutdown.flag"
+    if (Test-Path $shutdown) { Remove-Item $shutdown -Force -ErrorAction SilentlyContinue }
     Write-Log 'Cleanup done'
 }
 
@@ -645,6 +658,7 @@ function Invoke-Session {
     if (-not $emu) { throw 'Emulator not found — start game first' }
 
     Start-Sleep -Seconds 3
+    Clear-StaleDllSignals
     Inject-Dll $emu $dll
     Start-Sleep -Seconds 2
     if (-not $Watch) { Start-WebPanel }
@@ -690,6 +704,7 @@ function Invoke-WatchInjectSession {
 
         Set-InjectStatus 'injecting' 'Step 3/3: Free Fire lobby me ho to best — inject ho rahi hai...'
         Start-Sleep -Seconds 8
+        Clear-StaleDllSignals
         try {
             Inject-Dll $emu $dll
         } catch {
