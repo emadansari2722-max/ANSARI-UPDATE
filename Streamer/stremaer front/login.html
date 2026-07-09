@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ANSARI CHEATS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Rajdhani', 'Orbitron', sans-serif;
+    }
+
+    body {
+      overflow: hidden;
+      background: #030306;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      position: relative;
+    }
+
+    /* Starfall: glowing dots (red/white/gray) */
+    .starfall {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .star {
+      position: absolute;
+      width: var(--s);
+      height: var(--s);
+      border-radius: 999px;
+      opacity: var(--o);
+      filter: blur(0.2px);
+      animation: starFall var(--d) linear var(--delay) infinite;
+      will-change: transform;
+    }
+
+    .star.star-red {
+      background: rgba(255, 30, 30, 0.95);
+      box-shadow:
+        0 0 10px rgba(255, 0, 0, 0.8),
+        0 0 22px rgba(255, 0, 0, 0.55),
+        0 0 40px rgba(255, 0, 0, 0.25);
+    }
+
+    .star.star-white {
+      background: rgba(255, 255, 255, 0.95);
+      box-shadow:
+        0 0 10px rgba(255, 255, 255, 0.85),
+        0 0 22px rgba(255, 255, 255, 0.55),
+        0 0 40px rgba(255, 255, 255, 0.25);
+    }
+
+    .star.star-gray {
+      background: rgba(205, 205, 205, 0.95);
+      box-shadow:
+        0 0 10px rgba(220, 220, 220, 0.75),
+        0 0 22px rgba(200, 200, 200, 0.5),
+        0 0 40px rgba(200, 200, 200, 0.22);
+    }
+
+    @keyframes starFall {
+      0% {
+        transform: translate3d(var(--x), -12vh, 0);
+      }
+      100% {
+        transform: translate3d(calc(var(--x) + var(--drift)), 112vh, 0);
+      }
+    }
+
+    @media only screen and (max-width: 600px) {
+      body {
+        background-size: auto;
+        background-position: right;
+      }
+    }
+
+    .login-container {
+      background: rgba(8, 8, 14, 0.92);
+      padding: 40px 36px;
+      border-radius: 4px;
+      width: 380px;
+      box-shadow: 0 0 0 1px rgba(255, 0, 64, 0.2), 0 20px 60px rgba(0,0,0,0.8);
+      text-align: center;
+      position: relative;
+      z-index: 1;
+      border: 1px solid rgba(255, 0, 64, 0.2);
+      border-left: 4px solid #ff0040;
+    }
+
+    .logo {
+      margin-bottom: 20px;
+    }
+
+    .logo img {
+      width: 60px;
+      margin-bottom: 10px;
+    }
+
+    .logo h2 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      color: #ff0040;
+      text-shadow: 0 0 20px rgba(255, 0, 64, 0.5);
+      text-transform: uppercase;
+    }
+
+    .brand-emoji {
+      -webkit-text-fill-color: #ff0040 !important;
+      background: none !important;
+    }
+
+    .logo p {
+      font-size: 13px;
+      color: #aaa;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px 16px;
+      margin-top: 15px;
+      border: 1px solid rgba(255, 0, 64, 0.2);
+      border-radius: 2px;
+      background: rgba(10, 10, 16, 0.9);
+      color: #e8e8ec;
+      font-size: 14px;
+      font-family: 'Rajdhani', sans-serif;
+      transition: all 0.2s ease;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #ff0040;
+      box-shadow: 0 0 0 2px rgba(255, 0, 64, 0.15);
+    }
+
+    .btn-login,
+    .loader {
+      width: 100%;
+      padding: 12px;
+      margin-top: 20px;
+      border-radius: 6px;
+      font-weight: 600;
+    }
+
+    .btn-login {
+      background: transparent;
+      color: #ff0040;
+      border: 1px solid #ff0040;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-size: 1rem;
+      font-weight: 600;
+      font-family: 'Orbitron', sans-serif;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    .btn-login:hover {
+      background: rgba(255, 0, 64, 0.15);
+      box-shadow: 0 0 24px rgba(255, 0, 64, 0.3);
+    }
+
+    .loader {
+      background: rgba(10, 10, 16, 0.9);
+      color: #ff4060;
+      border: 1px solid rgba(255, 0, 64, 0.2);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 0.9rem;
+    }
+
+    .loader::after {
+      content: '';
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      margin-left: 10px;
+      border: 2px solid rgba(255, 0, 64, 0.3);
+      border-radius: 50%;
+      border-top-color: #ff0040;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .divider {
+      margin: 20px 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255,255,255,0.5);
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: rgba(255, 0, 64, 0.2);
+      margin: 0 10px;
+    }
+
+    .btn-create {
+      width: 100%;
+      padding: 10px;
+      background: rgba(255,255,255,0.04);
+      color: rgba(255,255,255,0.8);
+      border: 1px solid rgba(255, 0, 64, 0.2);
+      border-radius: 2px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+
+    .btn-create:hover {
+      background: rgba(255, 0, 64, 0.08);
+      border-color: rgba(255, 0, 64, 0.4);
+    }
+
+    .message {
+      margin-top: 15px;
+      font-size: 14px;
+      color: red;
+      display: none;
+    }
+
+  </style>
+</head>
+<body>
+  
+  <div class="starfall" id="starfall" aria-hidden="true"></div>
+
+  <div class="login-container">
+    <div class="logo">
+      
+      <h2><span class="brand-emoji">🔥</span> ANSARI CHEATS</h2>
+      <p></p>
+    </div>
+
+    <form id="login-form">
+      <input type="text" name="Username" placeholder="Username" required>
+      <input type="Password" name="Password" placeholder="Password" required>
+      <button type="submit" class="btn-login" id="login-btn">Login</button>
+      <div class="loader" id="login-loader" style="display:none;">Verifying</div>
+    </form>
+
+    <div class="divider">or</div>
+
+    <button class="btn-create" onclick="window.location.href='/register'">Create Account</button>
+
+    <div id="login-msg" class="message"></div>
+  </div>
+
+  <script>
+    const form = document.getElementById('login-form');
+    const loginBtn = document.getElementById('login-btn');
+    const loader = document.getElementById('login-loader');
+    const messageBox = document.getElementById('login-msg');
+
+    // Create starfall dots (3 colors: red, white, gray)
+    (() => {
+      const wrap = document.getElementById('starfall');
+      if (!wrap) return;
+
+      const STAR_COUNT = 70;
+      const colors = ['star-red', 'star-white', 'star-gray'];
+
+      function rand(min, max) {
+        return Math.random() * (max - min) + min;
+      }
+
+      for (let i = 0; i < STAR_COUNT; i++) {
+        const el = document.createElement('div');
+        el.className = `star ${colors[i % colors.length]}`;
+
+        const size = rand(2, 4.2).toFixed(2) + 'px';
+        const opacity = rand(0.35, 0.9).toFixed(2);
+        const duration = rand(6, 14).toFixed(2) + 's';
+        const delay = (-rand(0, 14)).toFixed(2) + 's'; // negative = already mid-fall
+        const x = rand(0, 100).toFixed(2) + 'vw';
+        const drift = rand(-18, 18).toFixed(2) + 'vw';
+
+        el.style.setProperty('--s', size);
+        el.style.setProperty('--o', opacity);
+        el.style.setProperty('--d', duration);
+        el.style.setProperty('--delay', delay);
+        el.style.setProperty('--x', x);
+        el.style.setProperty('--drift', drift);
+
+        wrap.appendChild(el);
+      }
+    })();
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      messageBox.style.display = "none";
+      loginBtn.style.display = "none";
+      loader.style.display = "flex";
+
+      const formData = new FormData(form);
+      const data = new URLSearchParams();
+      for (const pair of formData) {
+        data.append(pair[0], pair[1]);
+      }
+
+      try {
+        const response = await fetch('/', {
+          method: 'POST',
+          body: data
+        });
+
+        const text = await response.text();
+
+        if (response.redirected) {
+          // Do NOT play sound on login page.
+          // Instead, request the index page to play the sound after it loads.
+          try {
+            localStorage.setItem('playLoginSuccessSound', '1');
+          } catch (e) {
+            // ignore storage errors
+          }
+          window.location.href = response.url;
+        } else {
+          loader.style.display = "none";
+          loginBtn.style.display = "block";
+          messageBox.innerHTML = text;
+          messageBox.style.display = "block";
+        }
+      } catch (err) {
+        loader.style.display = "none";
+        loginBtn.style.display = "block";
+        messageBox.innerText = "Network error. Please try again.";
+        messageBox.style.display = "block";
+      }
+    });
+  </script>
+
+</body>
+</html>

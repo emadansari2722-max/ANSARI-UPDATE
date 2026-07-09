@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+build/
+dist/
+app.build/
+app.dist/
+output/
+*.exe
+.vscode/
+app_error.log
+build_output.txt

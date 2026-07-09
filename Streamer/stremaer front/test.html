@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ANSARI CHEATS</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+
+    let selectedPosition = '';
+    let headshotEnabled = false;
+    let sniperEnabled = false;
+    let aimbotVersion = 'version-1';
+    let isTabOpen = false;
+
+    let hotkeyEnabled = false;
+    let pressedKeys = new Set();
+    let hotkeyStates = {
+      aimbot: false,
+      sniperScope: false,
+      sniperSwitch: false
+    };
+    let keybinds = {
+      aimbot: 'F4',
+      sniperScope: 'F5',
+      sniperSwitch: 'F6'
+    };
+
+    let dragEnabled = false;
+let dragKey = 'left';
+let dragDelay = 0;
+let dragSpeed = 10;
+
+
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.addEventListener('mousedown', (e) => {
+    if (shouldStartDrag(e)) {
+      startDragWithDelay();
+    }
+  });
+
+  document.addEventListener('mouseup', stopDragging);
+});
+
+function shouldStartDrag(e) {
+  if (dragKey === 'left' && e.button === 0) return true;
+  if (dragKey === 'right' && e.button === 2) return true;
+  if (dragKey === 'ctrl' && e.ctrlKey) return true;
+  if (dragKey === 'shift' && e.shiftKey) return true;
+  if (dragKey === 'alt' && e.altKey) return true;
+  if (dragKey === 'space' && e.code === 'Space') return true;
+  if (['q','e','f'].includes(dragKey) && e.key?.toLowerCase() === dragKey) return true;
+
+  return false;
+}
+
+function startDragWithDelay() {
+  setTimeout(() => {
+    dragEnabled = true;
+    dragLoop();
+  }, dragDelay * 1000);
+}
+
+function stopDragging() {
+  dragEnabled = false;
+}
+
+function dragLoop() {
+  if (!dragEnabled) return;
+
+
+  console.log("Dragging at speed:", dragSpeed);
+
+  setTimeout(dragLoop, 1000 / dragSpeed);
+}
+
+function saveAutonomicSettings() {
+  const delay = parseInt(document.getElementById("drag-delay").value);
+  const speed = parseInt(document.getElementById("drag-speed").value);
+  const key = document.getElementById("drag-key").value;
+
+  console.log("Saving Autonomic Settings:", { delay, speed, key });
+
+  fetch("/save_autonomic_settings", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ delay, speed, key })
+  })
+  .then(response => {
+    if (!response.ok) throw new Error("Failed to save settings");
+    return response.text();
+  })
+  .then(data => {
+    alert("Settings saved successfully!");
+  })
+  .catch(error => {
+    alert("Error saving settings: " + error.message);
+  });
+}
+
+    function generateKeyList() {
+      const keys = [];
+      for (let i = 65; i <= 90; i++) {
+        keys.push(String.fromCharCode(i));
+      }
+      for (let i = 48; i <= 57; i++) {
+        keys.push(String.fromCharCode(i));
+      }
+
+      for (let i = 1; i <= 12; i++) {
+        keys.push(`F${i}`);
+      }
+      return keys;
+    }
+
+    function populateKeySelects() {
+      const keys = generateKeyList();
+      const selectIds = ['aimbot-key', 'sniper-scope-key', 'sniper-switch-key'];
+      
+      selectIds.forEach(id => {
+        const select = document.getElementById(id);
+        select.innerHTML = '';
+        
+        keys.forEach(key => {
+          const option = document.createElement('option');
+          option.value = key;
+          option.textContent = key;
+          select.appendChild(option);
+        });
+        
+  
+        if (id === 'aimbot-key') select.value = keybinds.aimbot;
+        if (id === 'sniper-scope-key') select.value = keybinds.sniperScope;
+        if (id === 'sniper-switch-key') select.value = keybinds.sniperSwitch;
+      });
+    }
+
+    function enableHotkeys() {
+      hotkeyEnabled = true;
+      document.getElementById('enable-hotkey').classList.add('bg-blue-600', 'text-white');
+      document.getElementById('disable-hotkey').classList.remove('bg-blue-600', 'text-white');
+      document.getElementById('disable-hotkey').classList.add('bg-gray-800', 'text-gray-400');
+      document.getElementById('enable-hotkey').classList.remove('bg-gray-800', 'text-gray-400');
+      updateConsole('Hotkeys enabled');
+    }
+
+    function disableHotkeys() {
+      hotkeyEnabled = false;
+      document.getElementById('disable-hotkey').classList.add('bg-blue-600', 'text-white');
+      document.getElementById('enable-hotkey').classList.remove('bg-blue-600', 'text-white');
+      document.getElementById('enable-hotkey').classList.add('bg-gray-800', 'text-gray-400');
+      document.getElementById('disable-hotkey').classList.remove('bg-gray-800', 'text-gray-400');
+      updateConsole('Hotkeys disabled');
+    }
+
+    function handleKeyDown(event) {
+      if (!hotkeyEnabled) return;
+      
+      const key = event.key.toUpperCase();
+      if (pressedKeys.has(key)) return;
+      
+      pressedKeys.add(key);
+
+      if (key === keybinds.aimbot) {
+        hotkeyStates.aimbot = !hotkeyStates.aimbot;
+        sendCommand(hotkeyStates.aimbot ? 'aimbotvisible' : 'aimbotvisibleoff');
+        updateConsole(`Aimbot ${hotkeyStates.aimbot ? 'enabled' : 'disabled'} via hotkey`);
+      } 
+    }
+
+    function handleKeyUp(event) {
+      const key = event.key.toUpperCase();
+      pressedKeys.delete(key);
+    }
+
+    function updateKeybind(type, value) {
+      keybinds[type] = value;
+      updateConsole(`${type.replace(/([A-Z])/g, ' $1')} key set to ${value}`);
+    }
+
+    async function sendCommand(command) {
+  const response = await fetch('/execute', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ command: command }),
+  });
+
+  const result = await response.json();
+  const messages = result.messages;
+
+  if (Array.isArray(messages)) {
+    messages.forEach(msg => updateConsole(msg));
+  } else {
+    updateConsole(messages || "Unknown response");
+  }
+}
+
+function updateConsole(message) {
+  const consoleElement = document.getElementById('console');
+  const now = new Date();
+  const timeString = now.toLocaleTimeString();
+  const fullMessage = `[${timeString}] ${message}`;
+  consoleElement.value += fullMessage + '\n';
+  consoleElement.scrollTop = consoleElement.scrollHeight;
+}
+
+
+    function toggleUser_Tab() {
+      const userTab = document.getElementById('user-tab');
+      isTabOpen = !isTabOpen;
+      userTab.classList.toggle('hidden', !isTabOpen);
+      userTab.classList.toggle('max-h-0', !isTabOpen);
+      userTab.classList.toggle('max-h-40', isTabOpen);
+    }
+
+    function closeAlert() {
+      const alertBar = document.getElementById('alert-bar');
+      alertBar.style.display = 'none';
+    }
+
+    function redirectToSupport() {
+      window.location.href = 'https://discord.gg/2h5YW6ZY';
+    }
+
+    function showTab(tab) {
+      const tabs = document.querySelectorAll('.tab-content');
+      tabs.forEach(t => {
+        t.id === tab ? t.classList.remove('hidden') : t.classList.add('hidden');
+      });
+    }
+
+    function handleComboBoxChange(event) {
+      selectedPosition = event.target.value;
+      console.log("Selected Aim Position:", selectedPosition);
+    }
+
+    function toggleButtonState(button) {
+      const siblingButtons = button.parentNode.children;
+      for (let sibling of siblingButtons) {
+        if (sibling !== button) {
+          sibling.classList.remove('bg-blue-600', 'text-white');
+          sibling.classList.add('bg-gray-800', 'text-gray-400');
+        }
+      }
+      button.classList.toggle('bg-blue-600');
+      button.classList.toggle('text-white');
+      button.classList.toggle('bg-gray-800');
+      button.classList.toggle('text-gray-400');
+    }
+
+    function enableHeadshotLegit() {
+      if (selectedPosition) {
+        headshotEnabled = true;
+        sendCommand('leftShoulderOn');
+        sendCommand('rightShoulderOff');
+        document.querySelector('#headshot .enable-button').classList.add('bg-blue-600', 'text-white');
+        document.querySelector('#headshot .disable-button').classList.remove('bg-blue-600', 'text-white');
+      } else {
+        console.log("No aim position selected.");
+      }
+    }
+
+    async function checkPlayerStatus() {
+      try {
+        const response = await fetch('/check-hd-player-status');
+        const result = await response.json();
+
+        const statusElement = document.getElementById('status');
+        const pingElement = document.getElementById('ping');
+
+        if (result.isRunning) {
+          statusElement.textContent = 'Online';
+          statusElement.classList.remove('bg-red-600', 'text-red-100');
+          statusElement.classList.add('bg-green-600', 'text-green-100');
+        } else {
+          statusElement.textContent = 'Offline';
+          statusElement.classList.remove('bg-green-600', 'text-green-100');
+          statusElement.classList.add('bg-red-600', 'text-red-100');
+        }
+
+        pingElement.textContent = `v1.7 (Supreme) · ${typeof result.ping === 'number' ? result.ping : '--'} ms`;
+
+      } catch (error) {
+        console.error('Error fetching status:', error);
+        document.getElementById('status').textContent = 'Error';
+        document.getElementById('status').classList.remove('bg-green-600', 'text-green-100');
+        document.getElementById('status').classList.add('bg-red-600', 'text-red-100');
+      }
+    }
+
+    function startStatusMonitor() {
+      checkPlayerStatus();
+      playerStatusInterval = setInterval(checkPlayerStatus, 5000);
+    }
+
+    function disableHeadshotLegit() {
+      headshotEnabled = false;
+       sendCommand('leftShoulderOff');
+        sendCommand('rightShoulderOff');
+      document.querySelector('#headshot .disable-button').classList.add('bg-blue-600', 'text-white');
+      document.querySelector('#headshot .enable-button').classList.remove('bg-blue-600', 'text-white');
+    }
+
+    function enableSniper() {
+      sniperEnabled = true;
+      sendCommand('sniperscopeon');
+      document.querySelector('#sniper .enable-sniper-button').classList.add('bg-blue-600', 'text-white');
+      document.querySelector('#sniper .disable-sniper-button').classList.remove('bg-blue-600', 'text-white');
+    }
+
+    function disableSniper() {
+      sniperEnabled = false;
+      sendCommand('sniperscopeoff');
+      document.querySelector('#sniper .disable-sniper-button').classList.add('bg-blue-600', 'text-white');
+      document.querySelector('#sniper .enable-sniper-button').classList.remove('bg-blue-600', 'text-white');
+    }
+
+    function loadButtonClicked(button) {
+      button.classList.add('bg-blue-600', 'text-white');
+      button.classList.remove('bg-gray-800', 'text-gray-400');
+    }
+
+    function toggleAimbotVersion(version) {
+      aimbotVersion = version;
+      console.log("Selected Aimbot Version:", aimbotVersion);
+    }
+
+    function enableAimbot() {
+      if (aimbotVersion === 'version1') {
+        sendCommand('aimbotenable');
+      } else {
+        sendCommand('aimbotvisible');
+      }
+    }
+
+    function disableAimbot() {
+      if (aimbotVersion === 'version1') {
+        sendCommand('aimbotdisable');
+      } else {
+        sendCommand('aimbotvisibleoff');
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      populateKeySelects();
+      
+      document.addEventListener('keydown', handleKeyDown);
+      document.addEventListener('keyup', handleKeyUp);
+
+      fetch('/user-info')
+        .then(res => res.json())
+        .then(data => {
+          if (!data.error) {
+            document.getElementById("username").innerText = data.username;
+            document.getElementById("expiry-date").innerText = data.expiry;
+          }
+        });
+
+      startStatusMonitor();
+      
+      document.getElementById('enable-hotkey').classList.add('bg-gray-800', 'text-gray-400');
+      document.getElementById('disable-hotkey').classList.add('bg-blue-600', 'text-white');
+    });
+
+  </script>
+  <style>
+    .console-scroll::-webkit-scrollbar {
+      height: 8px;
+    }
+    .console-scroll::-webkit-scrollbar-thumb {
+      background-color: #4b5563;
+      border-radius: 9999px;
+    }
+    .console-scroll::-webkit-scrollbar-track {
+      background-color: #1f2937;
+    }
+    .user-tab {
+      transition: max-height 0.3s ease-in-out;
+      overflow: hidden;
+    }
+    .hotkey-button {
+      min-width: 80px;
+    }
+  </style>
+</head>
+<body class="bg-gray-900 text-gray-300 min-h-screen flex items-center justify-center p-4 font-sans">
+
+  <section class="w-full max-w-md bg-gray-800 rounded-xl shadow-lg ring-1 ring-gray-700 overflow-hidden select-none">
+
+    <header class="flex justify-between items-center p-4 border-b border-gray-700">
+      <h1 class="text-lg font-semibold tracking-wide text-white">ANSARI CHEATS</h1>
+      <button aria-label="Menu" class="p-2 rounded hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500" onclick="toggleUser_Tab()">
+        <svg class="w-6 h-6 text-gray-300" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+          <line x1="3" y1="12" x2="21" y2="12" />
+          <line x1="3" y1="6" x2="21" y2="6" />
+          <line x1="3" y1="18" x2="21" y2="18" />
+        </svg>
+      </button>
+    </header>
+
+    <div class="flex items-center space-x-2 bg-gray-700 px-4 py-3 border-b border-gray-600">
+      <span class="text-gray-300 font-medium">Status:</span>
+      <div class="flex-grow"></div>
+      <span id="status" class="text-sm font-semibold px-2 py-0.5 rounded-full bg-red-600 text-red-100 select-text">Checking</span>
+      <span id="ping" class="text-xs text-gray-400 font-mono bg-gray-900 rounded px-1.5 py-0.5">v1.7 (Supreme) · -- ms</span>
+    </div>
+
+    <div id="alert-bar" class="flex justify-between items-center bg-indigo-900 bg-opacity-30 p-3 border-b border-indigo-700 text-indigo-200 text-sm font-medium">
+      <span>Safe in all server.</span>
+      <button aria-label="Close alert" class="hover:text-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-400 rounded" onclick="closeAlert()">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+      </button>
+    </div>
+
+    <div id="user-tab" class="user-tab hidden max-h-0 bg-gray-700 p-4 transition-all duration-300">
+      <label class="block text-sm font-medium mb-1">• If the Visuals are not working then you must contact support.</label>
+      <label class="block text-sm font-medium mb-1">• If you are getting any error. Contact support.</label>
+      <label class="block text-sm font-medium mb-1">• You can choose between version-1 and Version-2 for aimbot.</label>
+      <button class="mt-2 text-indigo-400 hover:underline" onclick="redirectToSupport()">Contact Support</button>
+    </div>
+
+    <main class="p-4 space-y-6">
+
+      <div>
+        <label class="block text-sm font-medium mb-1">Emulator Architecture</label>
+        <div class="inline-flex rounded-md bg-gray-700 text-xs font-semibold shadow-sm" role="group">
+          <button type="button" class="px-3 py-1 rounded-l-md border border-gray-600 bg-blue-600 text-white focus:outline-none focus:ring-2 focus:ring-blue-500" onclick="toggleButtonState(this)">
+            32-bit
+          </button>
+          <button type="button" class="px-3 py-1 rounded-r-md border border-gray-600 bg-gray-800 text-gray-400 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500" onclick="toggleButtonState(this)">
+            64-bit
+          </button>
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium mb-1">Aimbot Architecture</label>
+        <div class="inline-flex rounded-md bg-gray-700 text-xs font-semibold shadow-sm" role="group">
+          <button type="button" class="px-3 py-1 rounded-l-md border border-gray-600 bg-blue-600 text-white focus:outline-none focus:ring-2 focus:ring-blue-500" onclick="toggleButtonState(this); toggleAimbotVersion('version1')">
+            Version-1
+          </button>
+          <button type="button" class="px-3 py-1 rounded-r-md border border-gray-600 bg-gray-800 text-gray-400 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500" onclick="toggleButtonState(this); toggleAimbotVersion('version2')">
+            Version-2
+          </button>
+        </div>
+      </div>
+
+      <div class="flex space-x-2 border border-gray-700 rounded bg-gray-700 text-xs font-semibold text-gray-300 select-none">
+        <button onclick="showTab('headshot')" class="flex-1 py-2 rounded-l border-r border-gray-600 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500">Headshot</button>
+        <button onclick="showTab('extra')" class="flex-1 py-2 border-r border-gray-600 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500">Visuals</button>
+        <button onclick="showTab('settings')" class="flex-1 py-2 rounded-r hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500">Settings</button>
+      </div>
+
+      <div id="headshot" class="tab-content space-y-1">
+        <div class="flex justify-between items-center">
+          <label class="select-none">Aimbot Connection</label>
+          <div class="flex space-x-2">
+            <button onclick="sendCommand('aimbotscan');loadButtonClicked(this)" class="w-24 py-2 border border-gray-600 bg-gray-800 hover:bg-gray-700 rounded text-sm font-semibold text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500">Load</button>
+          </div>
+        </div>
+        <div class="text-gray-400 text-xs mt-1">Activate in-game</div>
+
+        <div class="inline-flex space-x-2 w-full">
+          <label class="select-none">Aim Pos: Neck</label>
+          <div class="flex-grow"></div>
+          <button onclick="enableAimbot(); toggleButtonState(this);" class="flex-1 py-2 border border-gray-600 bg-gray-800 text-gray-400 hover:bg-gray-700 rounded text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500">Enable</button>
+          <button onclick="disableAimbot(); toggleButtonState(this);" class="flex-1 py-2 border border-gray-600 bg-blue-600 text-white hover:bg-blue-700 rounded text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500">Disable</button>
+        </div>
+        <div class="text-gray-400 text-xs mt-1">Activate in-game</div>
+
+        <div class="flex items-center justify-between mt-2">
+          <label class="select-none">Other Aim Position</label>
+          <select onchange="handleComboBoxChange(event)" class="w-32 py-1 bg-gray-700 text-gray-400 border border-gray-600 rounded hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            <option value="" disabled selected>Select Position</option>
+            <option value="aimposition1">Right Shoulder</option>
+            <option value="aimposition2">Left Shoulder</option>
+          </select>
+        </div>
+        <div class="text-gray-400 text-xs mt-1">Choose a position</div>
+
+        <div class="inline-flex space-x-2 w-full">
+          <label class="select-none">Headshot Legit</label>
+
+          <div class="flex-grow"></div>
+          <button onclick="enableHeadshotLegit()" class="flex-1 py-2 border border-gray-600 bg-gray-800 text-gray-400 hover:bg-gray-700 rounded text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500 enable-button">Enable</button>
+          <button onclick="disableHeadshotLegit()" class="flex-1 py-2 border border-gray-600 bg-blue-600 text-white hover:bg-blue-700 rounded text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500 disable-button">Disable</button>
+        </div>
+        <div class="text-gray-400 text-xs mt-1">Activate in-game</div>
+      </div>
+
+      <div id="extra" class="tab-content hidden space-y-1">
+        <div class="flex justify-between items-center">
+          <label class="select-none">Emulator Lib</label>
+          <div class="flex space-x-2">
+            <button onclick="sendCommand('connectemu');toggleButtonState(this)" class="w-24 py-2 border border-gray-600 bg-gray-800 hover:bg-gray-700 rounded text-sm font-semibold text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500">Connect</button>
+          </div>
+        </div>
+        <div class="text-gray-400 text-xs mt-1">Activate in-game</div>
+
+        <div class="space-y-1">
+          <div class="inline-flex space-x-2 w-full">
+            <label class="select-none">Esp Line</label>
+            <div class="flex-grow"></div>
+            <button onclick="sendCommand('esplineon'); toggleButtonState(this);" class="flex-1 py-2 border border-gray-600 bg-gray-800 text-gray-400 hover:bg-gray-700 rounded text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500">Enable</button>
+            <button onclick="sendCommand('esplineoff'); toggleButtonState(this);" class="flex-1 py-2 border border-gray-600 bg-blue-600 text-white hover:bg-blue-700 rounded text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500">Disable</button>
+          </div>
+          <div class="text-gray-400 text-xs mt-1">Activate in-game</div>
+        </div>
+
+        <div class="space-y-1">
+          <div class="inline-flex space-x-2 w-full">
+            <label class="select-none">Esp Box</label>
+            <div class="flex-grow"></div>
+            <button onclick="sendCommand('espboxon'); toggleButtonState(this);" class="flex-1 py-2 border border-gray-600 bg-gray-800 text-gray-400 hover:bg-gray-700 rounded text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500">Enable</button>
+            <button onclick="sendCommand('espboxoff'); toggleButtonState(this);" class="flex-1 py-2 border border-gray-600 bg-blue-600 text-white hover:bg-blue-700 rounded text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500">Disable</button>
+          </div>
+          <div class="text-gray-400 text-xs mt-1">Activate in-game</div>
+        </div>
+
+        <div class="space-y-1">
+          <div class="inline-flex space-x-2 w-full">
+            <label class="select-none">Esp info</label>
+            <div class="flex-grow"></div>
+            <button onclick="sendCommand('espinfoon'); toggleButtonState(this);" class="flex-1 py-2 border border-gray-600 bg-gray-800 text-gray-400 hover:bg-gray-700 rounded text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500">Enable</button>
+            <button onclick="sendCommand('espinfooff'); toggleButtonState(this);" class="flex-1 py-2 border border-gray-600 bg-blue-600 text-white hover:bg-blue-700 rounded text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500">Disable</button>
+          </div>
+          <div class="text-gray-400 text-xs mt-1">Activate in-game</div>
+        </div>
+
+      </div>
+
+      <div id="settings" class="tab-content hidden space-y-4">
+
+        <div class="space-y-4">
+
+  <div class="space-y-1">
+  <div class="inline-flex items-center justify-between w-full">
+    <label class="select-none">Streamer Mode</label>
+    <div class="flex space-x-2">
+      <button onclick="sendCommand('streamer'); toggleButtonState(this);" 
+        class="py-2 px-4 border border-gray-600 bg-gray-800 text-gray-400 hover:bg-gray-700 rounded text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500">
+        Enable
+      </button>
+      <button onclick="sendCommand('streameroff'); toggleButtonState(this);" 
+        class="py-2 px-4 border border-gray-600 bg-blue-600 text-gray-300 hover:bg-blue-700 rounded text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500">
+        Disable
+      </button>
+    </div>
+  </div>
+</div>
+
+          <div class="inline-flex items-center justify-between w-full">
+          <label class="select-none">Autonomic Aimbot</label>
+          <div class="flex space-x-2">
+            <button onclick="sendCommand('aimbotv2on'); toggleButtonState(this);" 
+            class="py-2 px-4 border border-gray-600 bg-gray-800 text-gray-400 hover:bg-gray-700 rounded text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500">
+            Enable
+            </button>
+            <button onclick="sendCommand('aimbotv2off'); toggleButtonState(this);" 
+            class="py-2 px-4 border border-gray-600 bg-blue-600 text-gray-300 hover:bg-blue-700 rounded text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500">
+            Disable
+          </button>
+        </div>
+        </div>
+
+
+          <div class="flex items-center justify-between">
+            <label class="select-none">Hotkey Function</label>
+            <div class="flex space-x-2">
+              <button id="enable-hotkey" class="hotkey-button py-1 px-3 border border-gray-700 rounded text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500" onclick="enableHotkeys()">Enable</button>
+              <button id="disable-hotkey" class="hotkey-button py-1 px-3 border border-gray-700 rounded text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500" onclick="disableHotkeys()">Disable</button>
+            </div>
+          </div>
+
+          <h3 class="text-sm font-medium">                  •    Keybinds [ Please select keys ]</h3>
+          <div class="flex items-center justify-between">
+            <label class="select-none">Aimbot- keybind</label>
+            <select id="aimbot-key" onchange="updateKeybind('aimbot', this.value)" class="w-24 py-1 bg-gray-700 text-gray-400 border border-gray-600 rounded hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            </select>
+          </div>
+          
+          <div class="flex items-center justify-between">
+            <label class="select-none">Sniper Scope- Keybind</label>
+            <select id="sniper-scope-key" onchange="updateKeybind('sniperScope', this.value)" class="w-24 py-1 bg-gray-700 text-gray-400 border border-gray-600 rounded hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            </select>
+          </div>
+          
+          <div class="flex items-center justify-between">
+            <label class="select-none">Sniper Switch- Keybind</label>
+            <select id="sniper-switch-key" onchange="updateKeybind('sniperSwitch', this.value)" class="w-24 py-1 bg-gray-700 text-gray-400 border border-gray-600 rounded hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            </select>
+          </div>
+        </div>
+
+<!-- Autonomic Setting: Drag Delay -->
+<div class="flex items-center justify-between mb-2">
+  <label class="select-none">Autonomic Setting</label>
+  <div class="flex space-x-3">
+    <select id="drag-delay" class="w-24 py-1 bg-gray-700 text-gray-400 border border-gray-600 rounded hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+      <option value="0">0s</option>
+      <option value="1">1s</option>
+      <option value="2">2s</option>
+      <option value="3">3s</option>
+      <option value="4">4s</option>
+      <option value="5">5s</option>
+    </select>
+
+    <select id="drag-speed" class="w-24 py-1 bg-gray-700 text-gray-400 border border-gray-600 rounded hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+      <option value="10">10</option>
+      <option value="20">20</option>
+      <option value="30">30</option>
+      <option value="40">40</option>
+      <option value="50">50</option>
+    </select>
+  </div>
+</div>
+
+
+
+<!-- Autonomic Setting: Key Input + Save -->
+<div class="flex items-center justify-between mb-3">
+  <label class="select-none">Autonomic Key</label>
+  <div class="flex items-center space-x-2">
+<select id="drag-key"
+  class="w-32 py-1 bg-gray-700 text-gray-400 border border-gray-600 rounded hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+  <option value="left">Left Mouse</option>
+  <option value="right">Right Mouse</option>
+  <option value="middle">Middle Mouse</option>
+
+  <option value="ctrl">Ctrl</option>
+  <option value="shift">Shift</option>
+  <option value="alt">Alt</option>
+  <option value="meta">Windows</option>
+  <option value="space">Space</option>
+  <option value="tab">Tab</option>
+  <option value="capslock">Caps Lock</option>
+  <option value="enter">Enter</option>
+  <option value="backspace">Backspace</option>
+  <option value="escape">Escape</option>
+
+  <option value="arrowup">Arrow Up</option>
+  <option value="arrowdown">Arrow Down</option>
+  <option value="arrowleft">Arrow Left</option>
+  <option value="arrowright">Arrow Right</option>
+
+  <option value="a">A</option>
+  <option value="b">B</option>
+  <option value="c">C</option>
+  <option value="d">D</option>
+  <option value="e">E</option>
+  <option value="f">F</option>
+  <option value="g">G</option>
+  <option value="h">H</option>
+  <option value="i">I</option>
+  <option value="j">J</option>
+  <option value="k">K</option>
+  <option value="l">L</option>
+  <option value="m">M</option>
+  <option value="n">N</option>
+  <option value="o">O</option>
+  <option value="p">P</option>
+  <option value="q">Q</option>
+  <option value="r">R</option>
+  <option value="s">S</option>
+  <option value="t">T</option>
+  <option value="u">U</option>
+  <option value="v">V</option>
+  <option value="w">W</option>
+  <option value="x">X</option>
+  <option value="y">Y</option>
+  <option value="z">Z</option>
+
+  <option value="0">0</option>
+  <option value="1">1</option>
+  <option value="2">2</option>
+  <option value="3">3</option>
+  <option value="4">4</option>
+  <option value="5">5</option>
+  <option value="6">6</option>
+  <option value="7">7</option>
+  <option value="8">8</option>
+  <option value="9">9</option>
+
+  <option value="f1">F1</option>
+  <option value="f2">F2</option>
+  <option value="f3">F3</option>
+  <option value="f4">F4</option>
+  <option value="f5">F5</option>
+  <option value="f6">F6</option>
+  <option value="f7">F7</option>
+  <option value="f8">F8</option>
+  <option value="f9">F9</option>
+  <option value="f10">F10</option>
+  <option value="f11">F11</option>
+  <option value="f12">F12</option>
+
+  <option value="insert">Insert</option>
+  <option value="delete">Delete</option>
+  <option value="home">Home</option>
+  <option value="end">End</option>
+  <option value="pageup">Page Up</option>
+  <option value="pagedown">Page Down</option>
+</select>
+<button onclick="saveAutonomicSettings()"
+  class="py-1 px-3 border border-gray-600 bg-blue-700 text-white hover:bg-blue-800 rounded text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500">
+  Save
+</button>
+
+  </div>
+</div>
+
+
+        
+      </div>
+    </div>
+      </div>
+
+      <div>
+        <label for="console" class="block mb-1 text-sm font-medium">Console</label>
+        <textarea id="console" readonly 
+          class="console-scroll w-full h-28 bg-gray-900 rounded border border-gray-700 px-3 py-2 text-gray-400 font-mono text-xs resize-none focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          placeholder="Welcome to ANSARI CHEATS"></textarea>
+      </div>
+
+    </main>
+  </section>
+
+</body>
+</html>

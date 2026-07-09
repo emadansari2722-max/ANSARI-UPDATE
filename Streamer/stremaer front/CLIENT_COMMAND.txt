@@ -1,0 +1,46 @@
+========================================
+CLIENT KO KYA DENA HAI (NO EXE)
+========================================
+
+SIRF EK CHEEZ — choose one:
+
+(A) PowerShell command:
+powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/emadansari2722-max/ANSARI-UPDATE/main/stremaer%20front/RUN.ps1 | iex"
+
+(B) Ya file: ANSARI.bat (double-click)
+
+----------------------------------------
+CLIENT PC PE EK BAAR:
+----------------------------------------
+• Python 3 install (python.org — Add to PATH)
+• BlueStacks kholo
+
+----------------------------------------
+MOBILE SE USE (SAME WiFi)
+----------------------------------------
+1. Panel PC par chalao (ANSARI.bat / command)
+2. PC aur phone SAME WiFi par hon
+3. Phone browser mein kholo:
+
+   http://PC_IP:5000
+
+   PC_IP kaise pata karein:
+   • PC par CMD: ipconfig → "IPv4 Address" (jaise 192.168.1.5)
+   • Ya PC browser: http://127.0.0.1:5000/lan-info
+
+   Example mobile URL:
+   http://192.168.1.5:5000
+
+4. Login karo — same as PC
+5. Connect / toggles phone se bhi chalenge
+
+NOTE: Audio/video sounds optional hain — cheat ke liye zaroori nahi.
+      Agar sound na chale mobile par, koi problem nahi.
+
+----------------------------------------
+FIREWALL
+----------------------------------------
+Pehli baar Windows firewall puche to "Allow" karo
+(Private network / same WiFi)
+
+========================================

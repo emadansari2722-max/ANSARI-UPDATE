@@ -1,0 +1,106 @@
+========================================
+GITHUB PAR KYA UPLOAD KARO
+Repo: emadansari2722-max/ANSARI-UPDATE
+========================================
+
+2 CHEEZEIN ALAG UPLOAD HOTI HAIN:
+
+----------------------------------------
+1) PYTHON PANEL — BUILD NAHI, YAHIN SE UPLOAD
+----------------------------------------
+Folder: stremaer front  (poora folder repo mein)
+
+GitHub structure:
+ANSARI-UPDATE/
+  stremaer front/
+    app.py
+    ANSARI.bat
+    RUN.ps1
+    INSTALL.ps1
+    UPDATE.ps1
+    START.ps1
+    START.bat
+    online_update.py
+    keyauth.py
+    injector.py
+    ... (baaki .py + html)
+    AotBst.dll
+    cimgui.dll
+    BOX.dll
+    wallfixedchams.dll
+    dlls/
+    bg main/
+    video sound/
+    devimage/
+    requirements.txt
+    update_config.json
+    CLIENT_COMMAND.txt
+
+MAT UPLOAD KARO (delete / .gitignore):
+  .venv/
+  __pycache__/
+  build/
+  dist/
+  app.build/
+  app.dist/
+  output/
+  app.exe          ← EXE mat daalo
+  AnsariCheats.exe
+  *.spec (optional rakho ya hatao)
+  build_panel.bat
+  build.bat
+  .vscode/
+
+Python panel = SOURCE CODE as-is. Koi compile/exe build NAHI.
+
+----------------------------------------
+2) Streamer.dll — PEHLE PC PAR BUILD, PHIR UPLOAD
+----------------------------------------
+Ye C# backend hai. Isko BUILD karna PADEGA:
+
+  cd "Streamer Backend\AotForms"
+  dotnet build -c Release
+
+Output milega:
+  bin\Release\net7.0-windows7.0\Client.dll
+
+Is file ko rename karke GitHub par upload:
+  Streamer/Streamer.dll
+
+GitHub structure:
+ANSARI-UPDATE/
+  Streamer/
+    Streamer.dll    ← built Client.dll (rename)
+
+KeyAuth variable streamer_url isi file ko point kare:
+https://github.com/emadansari2722-max/ANSARI-UPDATE/raw/refs/heads/main/Streamer/Streamer.dll
+
+Jab naya cheat update ho:
+  → dotnet build dubara
+  → Streamer.dll replace on GitHub
+  → KeyAuth streamer_version badhao (2.0 → 2.1)
+
+----------------------------------------
+KEYAUTH MATCH KARO
+----------------------------------------
+App version (dashboard):     2.0
+app.py version=              2.0
+streamer_version variable:   2.0
+streamer_url:                Streamer.dll raw link
+
+----------------------------------------
+UPLOAD STEPS (simple)
+----------------------------------------
+1. GitHub.com → emadansari2722-max/ANSARI-UPDATE
+2. Upload folder "stremaer front" (bina .venv, bina .exe)
+3. Build C# → upload Streamer/Streamer.dll
+4. Verify raw links open in browser
+
+----------------------------------------
+CLIENT KO KYA DO (upload ke baad)
+----------------------------------------
+powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/emadansari2722-max/ANSARI-UPDATE/main/stremaer%20front/RUN.ps1 | iex"
+
+Ya ANSARI.bat
+
+========================================

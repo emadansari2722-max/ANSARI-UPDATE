@@ -1,0 +1,16 @@
+REM ---------- UPDATED: SINGLE EXE BUILD (RECOMMENDED) ----------
+REM This command creates ONE .exe file with all DLLs and files bundled inside
+pyinstaller --onefile --noconsole app.spec
+
+REM OR directly without spec file:
+REM pyinstaller --onefile --noconsole app.py --add-data "index.html;." --add-data "login.html;." --add-data "bg main;bg main" --add-data "video sound;video sound" --add-binary "dlls/cimgui.dll;." --add-binary "dlls/AotBst.dll;."
+
+REM ---------- OLD: FOLDER-BASED BUILD (Creates folder structure) ----------
+REM pyinstaller --onefile --noconsole app.py --add-data "index.html;." --add-data "login.html;." --add-data "bg main;bg main" --add-data "video sound;video sound" --add-binary "cimgui.dll;." --add-binary "AotBst.dll;." --add-binary "BOX.dll;." --add-binary "wallfixedchams.dll;."
+
+REM ---------- NOTES ----------
+REM --onefile: Creates a single .exe file (slower startup, but easier to distribute)
+REM --noconsole: Hides the console window (no black window)
+REM --add-data: Bundles HTML, folders, images inside the exe
+REM --add-binary: Bundles DLL files inside the exe
+REM All files will be automatically extracted to temp folder when app runs

@@ -1,0 +1,47 @@
+# FUTURE PROJECT SETUP GUIDE (Hinglish/English)
+
+Agar aapko future mein kisi aur computer par ye project run karna ho ya edit karna ho, to ye steps follow karein:
+
+======================================
+1. PYTHON INSTALL KARNA (Sabse Zaroori)
+======================================
+- Sabse pehle python.org se Python ka latest version download karein.
+- Jab install karein, to dhyan rakhein ki **"Add Python to PATH"** option ko tick (check) zaroor karein. Ye bahut zaroori hai.
+
+======================================
+2. LIBRARIES (DEPENDENCIES) INSTALL KARNA
+======================================
+Project run karne ke liye kuch extra tools chahiye hote hain.
+CMD (Command Prompt) kholein aur ye command run karein:
+
+   pip install flask flask-cors keyauth psutil
+
+Ye command automatically internet se saari required files download kar legi.
+
+======================================
+3. EXE BANANE WALA TOOL INSTALL KARNA
+======================================
+Agar aapko future mein EXE (Application) banana hai, to ye command run karein:
+
+   pip install pyinstaller
+
+======================================
+4. PROJECT KAISE RUN KAREIN (Testing ke liye)
+======================================
+- Jis folder mein aapka project hai, wahan CMD kholein.
+- Type karein:
+   python app.py
+- Isse aapka "Host" (Localhost Server) start ho jayega.
+
+======================================
+5. EXE (APPLICATION) KAISE BANAYEIN
+======================================
+- Is project folder mein "build.bat" naam ki file hai.
+- Us par double click karein.
+- Thodi der wait karein.
+- "dist" folder check karein, wahan "app.exe" ban jayega.
+
+======================================
+NOTE:
+- Agar "ModuleNotFoundError" aaye, to iska matlab koi library missing hai. Us library ka naam Google par search karke `pip install <naam>` karein.
+- Exe banate waqt Antivirus kabhi-kabhi file delete kar deta hai, use disable karke try karein.

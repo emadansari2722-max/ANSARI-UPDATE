@@ -1,0 +1,3649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ANSARI CHEATS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;800&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Rajdhani', 'Orbitron', sans-serif;
+            background: #030306;
+            color: #e8e8ec;
+            margin: 0;
+            padding: 16px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Global scrollbar - dark red theme */
+        body::-webkit-scrollbar,
+        .main-container::-webkit-scrollbar,
+        .tab-content-wrapper::-webkit-scrollbar {
+            width: 6px;
+        }
+        body::-webkit-scrollbar-track,
+        .main-container::-webkit-scrollbar-track,
+        .tab-content-wrapper::-webkit-scrollbar-track {
+            background: rgba(8, 4, 12, 0.9);
+            border-radius: 3px;
+        }
+        body::-webkit-scrollbar-thumb,
+        .main-container::-webkit-scrollbar-thumb,
+        .tab-content-wrapper::-webkit-scrollbar-thumb {
+            background: rgba(255, 0, 64, 0.35);
+            border-radius: 3px;
+        }
+        body::-webkit-scrollbar-thumb:hover,
+        .main-container::-webkit-scrollbar-thumb:hover,
+        .tab-content-wrapper::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 0, 64, 0.5);
+        }
+        body, .main-container, .tab-content-wrapper, .console-body {
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 0, 64, 0.4) rgba(8, 4, 12, 0.9);
+        }
+
+        /* Smooth overall feel */
+        .main-container,
+        .card,
+        .control-panel,
+        .action-panel,
+        .tabs,
+        .btn,
+        .tab-btn,
+        .console,
+        .notification {
+            transition: transform 220ms ease, box-shadow 220ms ease, background-color 220ms ease, border-color 220ms ease;
+        }
+
+        /* Starfall: glowing dots (red/white/gray) */
+        .starfall {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .star {
+            position: absolute;
+            width: var(--s);
+            height: var(--s);
+            border-radius: 999px;
+            opacity: var(--o);
+            filter: blur(0.2px);
+            animation: starFall var(--d) linear var(--delay) infinite;
+            will-change: transform;
+        }
+
+        .star.star-red {
+            background: rgba(255, 30, 30, 0.95);
+            box-shadow:
+                0 0 10px rgba(255, 0, 0, 0.8),
+                0 0 22px rgba(255, 0, 0, 0.55),
+                0 0 40px rgba(255, 0, 0, 0.25);
+        }
+
+        .star.star-white {
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow:
+                0 0 10px rgba(255, 255, 255, 0.85),
+                0 0 22px rgba(255, 255, 255, 0.55),
+                0 0 40px rgba(255, 255, 255, 0.25);
+        }
+
+        .star.star-gray {
+            background: rgba(205, 205, 205, 0.95);
+            box-shadow:
+                0 0 10px rgba(220, 220, 220, 0.75),
+                0 0 22px rgba(200, 200, 200, 0.5),
+                0 0 40px rgba(200, 200, 200, 0.22);
+        }
+
+        @keyframes starFall {
+            0% { transform: translate3d(var(--x), -12vh, 0); }
+            100% { transform: translate3d(calc(var(--x) + var(--drift)), 112vh, 0); }
+        }
+
+        /* Emoji burst overlay (click feedback) */
+        .emoji-burst {
+            position: fixed;
+            left: var(--x, 50%);
+            top: var(--y, 50%);
+            transform: translate(-50%, -50%);
+            z-index: 99999;
+            pointer-events: none;
+            font-size: 20px;
+            animation: emojiPop 700ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+            filter: drop-shadow(0 0 10px rgba(255, 0, 0, 0.55));
+            mix-blend-mode: screen;
+            opacity: 0;
+        }
+
+        @keyframes emojiPop {
+            0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.6) rotate(-10deg); }
+            20%  { opacity: 1; }
+            70%  { opacity: 0.9; transform: translate(calc(-50% + var(--dx, 0px)), calc(-50% + var(--dy, -22px))) scale(1.2) rotate(8deg); }
+            100% { opacity: 0; transform: translate(calc(-50% + var(--dx, 0px)), calc(-50% + var(--dy, -22px))) scale(1.35) rotate(14deg); }
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            pointer-events: none;
+            z-index: 0;
+            display: none;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: none;
+            pointer-events: none;
+            z-index: 0;
+            display: none;
+        }
+
+        /* Particles only - no video */
+        #particles-canvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.7;
+        }
+        .particles-container {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+        .video-container {
+            display: none !important;
+        }
+
+
+        .main-container {
+            width: 100%;
+            max-width: 720px;
+            background: rgba(8, 6, 12, 0.92);
+            backdrop-filter: blur(24px);
+            border-radius: 16px;
+            padding: 28px 32px;
+            box-shadow: 0 0 100px rgba(255, 0, 60, 0.06), 0 30px 90px rgba(0,0,0,0.65);
+            display: flex;
+            flex-direction: column;
+            gap: 22px;
+            position: relative;
+            z-index: 2;
+            border: 1px solid rgba(255, 0, 60, 0.12);
+            min-height: auto;
+            max-height: 95vh;
+            margin: 0 auto;
+            overflow-y: auto;
+        }
+
+        .main-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 3px;
+            height: 100%;
+            background: linear-gradient(180deg, #ff0040, rgba(255,0,64,0.4), transparent);
+            border-radius: 8px 0 0 8px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 16px;
+            border-bottom: 1px solid rgba(255, 0, 60, 0.18);
+            margin-bottom: 14px;
+        }
+
+        .header h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.6rem;
+            margin: 0;
+            font-weight: 700;
+            letter-spacing: 0.22em;
+            color: #ff0040;
+            text-shadow: 0 0 24px rgba(255, 0, 64, 0.5);
+            position: relative;
+        }
+
+        .header h1::after {
+            display: none;
+        }
+
+        .brand-emoji {
+            margin-right: 8px;
+            font-size: 1.1em;
+            -webkit-text-fill-color: #ff0040 !important;
+            background: none !important;
+        }
+
+        .brand-red {
+            color: #ff0040;
+            text-shadow: 0 0 20px rgba(255, 0, 64, 0.6);
+        }
+
+        .brand-white {
+            color: #ffffff;
+            text-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
+        }
+
+        .tab-emoji {
+            line-height: 1;
+            font-size: 1rem;
+        }
+
+        .menu-emoji {
+            margin-right: 6px;
+        }
+
+        .menu-btn {
+            background: rgba(255, 0, 64, 0.08);
+            border: 1px solid rgba(255, 0, 64, 0.25);
+            color: #ff4060;
+            border-radius: 8px;
+            width: 40px;
+            height: 40px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .menu-btn:hover {
+            background: rgba(255, 0, 64, 0.2);
+        }
+
+        /* Top-right menu dropdown */
+        .menu-dropdown {
+            position: absolute;
+            top: 58px;
+            right: 24px;
+            min-width: 220px;
+            background: rgba(12, 8, 14, 0.98);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 0, 64, 0.2);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+            padding: 8px;
+            z-index: 20;
+            display: none;
+        }
+
+        .menu-dropdown.open {
+            display: block;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.88rem;
+            color: rgba(255,255,255,0.9);
+            transition: background-color 0.18s ease, transform 0.18s ease;
+        }
+
+        .menu-item span.label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .menu-item i {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .menu-item:hover {
+            background: rgba(255, 0, 64, 0.12);
+        }
+
+        .menu-divider {
+            height: 1px;
+            margin: 4px 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+        }
+
+        /* About devs modal */
+        .devs-modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at top, rgba(0,0,0,0.9), rgba(0,0,0,0.98));
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 30;
+        }
+
+        .devs-modal-backdrop.open {
+            display: flex;
+        }
+
+        .devs-modal {
+            width: 100%;
+            max-width: 640px;
+            background: rgba(12, 8, 14, 0.98);
+            border-radius: 12px;
+            padding: 20px 24px;
+            border: 1px solid rgba(255, 0, 64, 0.2);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.9);
+        }
+
+        .devs-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+
+        .devs-header h2 {
+            font-size: 1.1rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .devs-close-btn {
+            background: transparent;
+            border: none;
+            color: rgba(255,255,255,0.7);
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .devs-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .dev-card {
+            background: radial-gradient(circle at top, rgba(255,0,40,0.2), transparent 60%),
+                        rgba(18,18,18,0.95);
+            border-radius: 14px;
+            padding: 12px 12px 10px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .dev-top {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .dev-avatar {
+            width: 46px;
+            height: 46px;
+            border-radius: 999px;
+            overflow: hidden;
+            background: radial-gradient(circle, rgba(255,255,255,0.15), transparent 70%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255,255,255,0.18);
+        }
+
+        .dev-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .dev-name {
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+
+        .dev-role {
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.7);
+        }
+
+        .dev-body {
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.78);
+            line-height: 1.45;
+        }
+
+        .sound-toggle-btn{
+            background: transparent;
+            border: 1px solid rgba(255, 0, 64, 0.3);
+            color: #ff4060;
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 0.8rem;
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+        .sound-toggle-btn:hover{
+            background: rgba(255, 0, 64, 0.1);
+        }
+        .sound-toggle-btn[aria-pressed="true"]{
+            border-color: #ff0040;
+            background: rgba(255, 0, 64, 0.1);
+        }
+
+        .card {
+            background: rgba(10, 8, 14, 0.95);
+            border-radius: 12px;
+            padding: 16px 20px;
+            border: 1px solid rgba(255, 0, 64, 0.1);
+            border-left: 3px solid rgba(255, 0, 64, 0.4);
+            transition: all 0.25s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.4);
+        }
+
+        .card::before {
+            display: none;
+        }
+
+        .card:hover {
+            background: rgba(18, 10, 20, 0.98);
+            border-left-color: #ff0040;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.45), 0 0 24px rgba(255, 0, 64, 0.08);
+        }
+
+        .status-card .status-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            flex-wrap: wrap;
+        }
+
+        .status-card .status-title { 
+            font-weight: 600; 
+        }
+
+        .status-indicator {
+            background: rgba(255, 0, 64, 0.2);
+            color: #ff4060;
+            padding: 5px 12px;
+            border-radius: 8px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 0.1em;
+            white-space: nowrap;
+            border: 1px solid rgba(255, 0, 64, 0.4);
+            text-transform: uppercase;
+        }
+
+        @keyframes pulseAccent {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.85; }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        .status-info { 
+            color: rgba(255, 255, 255, 0.7); 
+            white-space: nowrap;
+            font-size: 0.85rem;
+        }
+        
+        .flex-grow {
+            flex-grow: 1;
+        }
+        
+        .status-body { 
+            margin: 8px 0 0; 
+            color: rgba(255, 255, 255, 0.6); 
+            font-size: 0.85rem; 
+        }
+
+        .alert-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+        }
+        
+        .warning-card {
+            background: linear-gradient(135deg, #f59e0b 0%, #f97316 50%, #facc15 100%); /* warm amber */
+            color: #111827;
+            padding: 14px 18px;
+            border-radius: 14px;
+            text-align: center;
+            font-size: 0.9rem;
+            font-weight: 700;
+            box-shadow: 
+                0 4px 20px rgba(245, 158, 11, 0.55),
+                0 0 15px rgba(250, 204, 21, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            border: 2px solid rgba(254, 243, 199, 0.9);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .warning-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        .esp-warning {
+            background: rgba(255, 152, 0, 0.15);
+            color: #ff9800;
+            padding: 12px 16px;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border: 1px solid rgba(255, 152, 0, 0.3);
+            backdrop-filter: blur(10px);
+            margin-bottom: 10px;
+        }
+
+        /* ESP grid: 4 + 4 side by side */
+        .esp-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+            width: 100%;
+        }
+
+        @media (max-width: 900px) {
+            .esp-grid {
+                grid-template-columns: 1fr; /* mobile pe wapas 1 column */
+            }
+        }
+
+        .close-btn {
+            background: none; 
+            border: none; 
+            color: #a0a0a0;
+            font-size: 1.5rem; 
+            line-height: 1; 
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .control-panel,
+        .action-panel {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 22px;
+            flex-wrap: wrap;
+            gap: 14px;
+            background: rgba(10, 8, 14, 0.92);
+            border-radius: 12px;
+            margin-bottom: 12px;
+            transition: all 0.25s ease;
+            border: 1px solid rgba(255, 0, 64, 0.1);
+            box-shadow: 0 2px 12px rgba(0,0,0,0.35);
+        }
+
+        .control-panel::before,
+        .action-panel::before {
+            display: none;
+        }
+
+        .control-panel:hover,
+        .action-panel:hover {
+            background: rgba(14, 10, 18, 0.95);
+            border-color: rgba(255, 0, 64, 0.18);
+        }
+
+        /* Better inner layout/alignment for panels */
+        .control-panel > div:first-child,
+        .action-panel > div:first-child {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            min-width: 0;
+            flex: 1 1 auto;
+        }
+
+        .control-panel .btn-group,
+        .action-panel .btn-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+        }
+        
+        .tab-content > .action-panel:last-of-type { 
+            border-bottom: none; 
+            margin-bottom: 0;
+        }
+        
+        .control-panel label, .action-panel label { 
+            font-size: 0.82rem;
+            font-weight: 600; 
+            color: rgba(255, 255, 255, 0.95);
+            letter-spacing: 0.04em;
+        }
+        
+        .hotkey-info { 
+            color: rgba(255, 255, 255, 0.4); 
+            font-size: 0.7rem; 
+            margin: 6px 0 0; 
+            font-weight: 500;
+            letter-spacing: 0.03em;
+        }
+
+        .btn-group { 
+            display: flex; 
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            border: none;
+            padding: 8px 16px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 600;
+            font-family: 'Rajdhani', sans-serif;
+            letter-spacing: 0.06em;
+            transition: all 0.25s ease;
+            white-space: nowrap;
+            border-radius: 8px;
+            position: relative;
+            text-transform: uppercase;
+        }
+
+        .btn::before {
+            display: none;
+        }
+
+        .btn:hover::before {
+            display: none;
+        }
+        
+        .btn-group .btn { border-radius: 0; }
+        .btn-group .btn:first-child { border-radius: 8px 0 0 8px; }
+        .btn-group .btn:last-child { border-radius: 0 8px 8px 0; }
+        
+        .btn-primary { 
+            background: transparent;
+            color: #ff0040;
+            border: 1px solid #ff0040;
+        }
+
+        .btn-primary:hover {
+            background: rgba(255, 0, 64, 0.2);
+            box-shadow: 0 0 20px rgba(255, 0, 64, 0.3);
+        }
+        
+        .action-panel > .btn-primary { border-radius: 8px; }
+        
+        .btn-secondary { 
+            background: rgba(255,255,255,0.04);
+            color: rgba(255,255,255,0.75);
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.08);
+            border-color: rgba(255,255,255,0.25);
+        }
+
+        /* Professional Toggle Switch */
+        .toggle-wrap {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        .toggle-input {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .toggle-slider {
+            width: 52px;
+            height: 28px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 14px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+        }
+        .toggle-slider::before {
+            content: '';
+            width: 22px;
+            height: 22px;
+            background: rgba(255,255,255,0.4);
+            border-radius: 50%;
+            margin-left: 2px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        }
+        .toggle-input:checked + .toggle-slider {
+            background: rgba(255, 0, 64, 0.25);
+            border-color: #ff0040;
+            box-shadow: 0 0 16px rgba(255, 0, 64, 0.2);
+        }
+        .toggle-input:checked + .toggle-slider::before {
+            transform: translateX(24px);
+            background: #ff0040;
+            box-shadow: 0 0 12px rgba(255, 0, 64, 0.6);
+        }
+        .toggle-wrap:hover .toggle-slider {
+            border-color: rgba(255, 0, 64, 0.4);
+        }
+
+        .tabs { 
+            display: flex;
+            align-self: stretch;
+            width: 100%;
+            margin-top: 6px;
+            margin-bottom: 12px;
+            background: transparent;
+            border: none;
+            border-radius: 0; 
+            overflow: visible;
+            gap: 0;
+            padding: 0;
+            position: relative;
+            box-shadow: none;
+            justify-content: center;
+        }
+
+        .tabs::before {
+            content: none;
+        }
+        
+        .tab-btn {
+            flex: 0 1 auto;
+            padding: 14px 20px; 
+            background: transparent;
+            border: none;
+            color: rgba(255,255,255,0.5); 
+            cursor: pointer; 
+            font-size: 0.85rem; 
+            font-weight: 600;
+            font-family: 'Orbitron', sans-serif;
+            transition: all 0.25s ease;
+            border-radius: 0;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .tab-btn::before {
+            display: none;
+        }
+        
+        .tab-btn:hover {
+            color: rgba(255,255,255,0.85);
+        }
+        
+        .tab-btn.active { 
+            color: #ff0040;
+            text-shadow: 0 0 16px rgba(255, 0, 64, 0.7);
+        }
+
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 85%;
+            height: 3px;
+            background: #ff0040;
+            box-shadow: 0 0 14px rgba(255, 0, 64, 0.8);
+            border-radius: 2px 2px 0 0;
+        }
+
+        .sections-layout {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            margin-top: 14px;
+            flex: 1;
+        }
+
+        .top-row {
+            display: flex;
+            gap: 14px;
+            margin-top: 0;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .top-row .card,
+        .top-row .control-panel {
+            flex: 1;
+            padding: 16px 20px;
+            border-radius: 12px;
+            min-width: 140px;
+        }
+
+        .top-row .status-header {
+            font-size: 0.78rem;
+            letter-spacing: 0.06em;
+        }
+
+        .top-row .status-indicator {
+            padding: 5px 12px;
+            font-size: 0.72rem;
+            border-radius: 8px;
+        }
+
+        .top-row .alert-card span {
+            font-size: 0.78rem;
+        }
+
+        .top-row .control-panel label {
+            font-size: 0.78rem;
+            margin-bottom: 6px;
+            display: block;
+            letter-spacing: 0.04em;
+        }
+
+        .top-row .control-panel .btn {
+            padding: 7px 12px;
+            font-size: 0.72rem;
+            border-radius: 8px;
+        }
+
+        .main-container.about-view .top-row,
+        .main-container.about-view .console,
+        .main-container.about-view .nav-tabs {
+            display: none !important;
+        }
+
+        /* About developers layout */
+        .about-devs {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            padding-top: 120px;   /* shuffle text ke niche space, boxes aur niche */
+            align-items: center;  /* center align */
+        }
+
+        .about-shuffle {
+            position: absolute;
+            top: 40px;            /* boxes se alag, upar khali jagah me */
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .about-shuffle-text {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: #ff0040;
+            text-shadow: 0 0 24px rgba(255, 0, 64, 0.6);
+            white-space: nowrap;
+        }
+
+
+        .about-dev-card {
+            display: flex;
+            align-items: flex-start;
+            gap: 24px;
+            padding: 20px 28px;
+            max-width: 760px;
+            border-radius: 12px;
+            background: rgba(12, 8, 14, 0.95);
+            border: 1px solid rgba(255, 0, 64, 0.12);
+            border-left: 4px solid rgba(255, 0, 64, 0.45);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.35);
+        }
+
+        .about-dev-img {
+            width: 159px;
+            height: 145px;
+            border-radius: 14px;
+            object-fit: cover;
+            border: 1px solid rgba(248, 113, 113, 0.8);
+            box-shadow:
+                0 0 14px rgba(248, 113, 113, 0.6),
+                0 0 28px rgba(248, 113, 113, 0.3);
+        }
+
+        .about-dev-name {
+            font-size: 1rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+        }
+
+        .about-dev-role {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.16em;
+            color: rgba(148, 163, 184, 0.9);
+            margin-top: 2px;
+        }
+
+        .about-dev-desc {
+            font-size: 0.85rem;
+            color: rgba(209, 213, 219, 0.9);
+            margin-top: 6px;
+        }
+
+        .about-dev-links {
+            display: flex;
+            flex-direction: column;    /* upar-niche */
+            align-items: flex-end;     /* right side align */
+            gap: 14px;                 /* Contact / Instagram ke beech zyada gap */
+            margin-top: 6px;
+            font-size: 0.85rem;
+        }
+
+        .about-dev-link {
+            min-width: 120px;
+            text-align: center;
+            padding: 7px 16px;
+            border-radius: 999px;
+            font-weight: 600;
+            text-decoration: none;
+            letter-spacing: 0.02em;
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            backdrop-filter: blur(10px);
+            box-shadow:
+                0 0 16px rgba(15, 23, 42, 0.85),
+                0 0 30px rgba(15, 23, 42, 0.6);
+            text-shadow:
+                0 0 10px rgba(255, 255, 255, 0.35),
+                0 0 22px rgba(255, 255, 255, 0.18);
+            transition: transform 180ms ease, filter 180ms ease, box-shadow 180ms ease;
+        }
+
+        .about-dev-link:hover {
+            transform: translateY(-1px);
+        }
+
+        .about-link-contact {
+            background: transparent;
+            color: #ff0040;
+            border: 1px solid #ff0040;
+        }
+
+        .about-link-contact:hover {
+            filter: brightness(1.08);
+        }
+
+        .about-link-instagram {
+            background: rgba(255,255,255,0.05);
+            color: rgba(255,255,255,0.9);
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+
+        .about-link-instagram:hover {
+            filter: brightness(1.08);
+        }
+
+        @media (max-width: 768px) {
+            .top-row {
+                flex-direction: column;
+            }
+        }
+
+        .tabs.tabs-vertical, .nav-tabs {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            gap: 0;
+            width: 100%;
+            justify-content: center;
+            padding: 0 0 2px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .tabs.tabs-vertical .tab-btn, .nav-tabs .tab-btn {
+            flex: 0 1 auto;
+            min-width: 90px;
+            text-align: center;
+            margin-bottom: 0;
+            padding: 14px 22px;
+            font-size: 0.85rem;
+        }
+
+        .tab-label {
+            display: inline;
+        }
+
+        .tab-content-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1 1 auto;
+            min-width: 0;
+            gap: 14px;
+            overflow-y: auto;
+            max-height: 50vh;
+            width: 100%;
+        }
+
+        .tab-content {
+            display: none;
+            flex-direction: column;
+            gap: 14px;
+            background: transparent;
+            border-radius: 16px;
+            padding: 16px 0;
+            animation: fadeIn 0.3s ease;
+            width: 100%;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .tab-content.active { 
+            display: flex; 
+        }
+
+        .slider-container { 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+            flex-grow: 1; 
+        }
+        
+        input[type="range"] { 
+            -webkit-appearance: none; 
+            appearance: none; 
+            width: 100%; 
+            height: 8px; 
+            background: rgba(255, 255, 255, 0.1); 
+            border-radius: 10px; 
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        input[type="range"]:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        input[type="range"]::-webkit-slider-thumb { 
+            -webkit-appearance: none; 
+            appearance: none; 
+            width: 22px; 
+            height: 22px; 
+            background: linear-gradient(135deg, #dc143c 0%, #ff0000 100%);
+            border-radius: 50%; 
+            cursor: pointer;
+            box-shadow: 
+                0 2px 15px rgba(220, 20, 60, 0.6),
+                0 0 10px rgba(255, 0, 0, 0.4);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.3);
+            box-shadow: 
+                0 4px 20px rgba(220, 20, 60, 0.8),
+                0 0 20px rgba(255, 0, 0, 0.6);
+        }
+        
+        input[type="range"]::-moz-range-thumb { 
+            width: 22px; 
+            height: 22px; 
+            background: linear-gradient(135deg, #dc143c 0%, #ff0000 100%);
+            border-radius: 50%; 
+            cursor: pointer;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 
+                0 2px 15px rgba(220, 20, 60, 0.6),
+                0 0 10px rgba(255, 0, 0, 0.4);
+        }
+        
+        .slider-value { 
+            color: rgba(255, 255, 255, 0.8); 
+            font-size: 0.9rem;
+            font-weight: 600;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        .settings-section {
+            display: flex; 
+            flex-direction: column; 
+            gap: 16px;
+            padding: 20px;
+            margin-top: 16px; 
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .settings-section > label { 
+            font-size: 1.2rem; 
+            font-weight: 700; 
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #dc143c 0%, #ff0000 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .settings-row { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            gap: 12px; 
+            flex-wrap: wrap;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .settings-row:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        .settings-row > label { 
+            flex-basis: 40%; 
+            font-size: 0.95rem; 
+            font-weight: 500;
+            min-width: 120px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        select {
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff; 
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px; 
+            padding: 10px 12px; 
+            font-size: 0.9rem;
+            flex-grow: 1;
+            min-width: 120px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        select:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #ff0000;
+            box-shadow: 0 0 0 3px rgba(220, 20, 60, 0.22);
+        }
+        
+        .update-btn { 
+            width: 100%; 
+            background: linear-gradient(135deg, #dc143c 0%, #ff0000 50%, #dc143c 100%);
+            color: white; 
+            border: none; 
+            border-radius: 14px; 
+            padding: 16px; 
+            font-size: 1rem; 
+            font-weight: 700;
+            cursor: pointer; 
+            margin-top: 20px;
+            transition: all 0.4s ease;
+            box-shadow: 
+                0 4px 20px rgba(220, 20, 60, 0.5),
+                0 0 15px rgba(255, 0, 0, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .update-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .update-btn:hover::before {
+            width: 400px;
+            height: 400px;
+        }
+
+        .update-btn:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 
+                0 8px 30px rgba(220, 20, 60, 0.7),
+                0 0 25px rgba(255, 0, 0, 0.5);
+        }
+
+        .console { 
+            background: rgba(12, 8, 14, 0.95);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 0, 64, 0.15);
+            border-left: 4px solid rgba(255, 0, 64, 0.45);
+            width: 100%;
+            margin-top: 18px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.02);
+        }
+        
+        .console-header {
+            padding: 16px 20px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            cursor: pointer; 
+            border-bottom: 1px solid rgba(255, 0, 64, 0.12);
+            background: rgba(18, 10, 20, 0.6);
+            transition: all 0.25s ease;
+            position: relative;
+            border-radius: 12px 12px 0 0;
+        }
+
+        .console-header::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #ff0040, rgba(255,0,64,0.5));
+            transition: width 0.35s;
+        }
+
+        .console-header:hover {
+            background: rgba(22, 12, 24, 0.8);
+        }
+
+        .console-header:hover::before {
+            width: 100%;
+        }
+        
+        .console-header span { 
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.95);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-size: 0.88rem;
+        }
+        
+        .console-header i { 
+            color: rgba(255, 0, 64, 0.85); 
+            transition: transform 0.3s ease; 
+        }
+        
+        .console-header i.collapsed { 
+            transform: rotate(-90deg); 
+        }
+        
+        .console-body {
+            height: 160px; 
+            padding: 18px 20px; 
+            font-size: 0.84rem; 
+            color: rgba(255, 220, 220, 0.9);
+            overflow-y: auto; 
+            display: block; 
+            transition: all 0.3s ease;
+            font-family: 'Courier New', Courier, monospace;
+            background: rgba(4, 2, 8, 0.5);
+            border-radius: 0 0 12px 12px;
+        }
+
+        .console-body::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .console-body::-webkit-scrollbar-track {
+            background: rgba(8, 4, 12, 0.9);
+            border-radius: 3px;
+        }
+
+        .console-body::-webkit-scrollbar-thumb {
+            background: rgba(255, 0, 64, 0.35);
+            border-radius: 3px;
+        }
+
+        .console-body::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 0, 64, 0.5);
+        }
+        
+        .console-body.hidden { 
+            height: 0; 
+            padding: 0; 
+            border-top: none; 
+            overflow: hidden; 
+        }
+        
+        .console-log { 
+            line-height: 1.5; 
+        }
+        
+        .console-log .time { 
+            color: #a0a0a0; 
+        }
+        
+        .console-log .message { 
+            color: #ddd; 
+        }
+        
+        .shoulder-select-container {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .shoulder-btn {
+            background: transparent;
+            color: #ff0040;
+            border: 1px solid #ff0040;
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            min-width: 140px;
+            text-align: center;
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            white-space: nowrap;
+        }
+        
+        .shoulder-btn::after {
+            content: "▼";
+            font-size: 0.7rem;
+            margin-left: 8px;
+        }
+        
+        .shoulder-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: rgba(12, 8, 14, 0.98);
+            border: 1px solid rgba(255, 0, 64, 0.2);
+            border-radius: 8px;
+            z-index: 100;
+            width: 100%;
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+        
+        .shoulder-menu.open {
+            display: flex;
+        }
+        
+        .shoulder-option {
+            padding: 8px 16px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            font-size: 0.9rem;
+        }
+        
+        .shoulder-option:hover {
+            background-color: rgba(255, 0, 64, 0.2);
+        }
+
+        #notification-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 300px;
+        }
+
+        .notification {
+            background: rgba(12, 8, 14, 0.98);
+            backdrop-filter: blur(20px);
+            color: #e8e8ec;
+            padding: 16px 20px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 0, 64, 0.3);
+            border-left: 4px solid #ff0040;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: 
+                opacity 0.4s ease, 
+                transform 0.4s ease;
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .notification::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, #dc143c, #ff0000, #dc143c);
+        }
+
+        .notification.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .notification.hide {
+            opacity: 0;
+            transform: translateX(100%);
+        }
+        
+        /* Added hotkey indicator styles */
+        .hotkey-assigned {
+            color: #a0a0a0;
+            font-weight: normal;
+        }
+
+        /* Status indicator colors */
+        .status-online {
+            background: rgba(255, 0, 64, 0.25) !important;
+            color: #ff4060 !important;
+            border-color: rgba(255, 0, 64, 0.5) !important;
+        }
+        .status-offline {
+            background: rgba(80, 0, 0, 0.4) !important;
+            color: #ff6060 !important;
+            border-color: rgba(139, 0, 0, 0.5) !important;
+        }
+        .status-error {
+            background: rgba(255, 69, 0, 0.2) !important;
+            color: #ff8040 !important;
+            border-color: rgba(255, 69, 0, 0.5) !important;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            animation: float 15s infinite ease-in-out;
+            opacity: 0.7;
+        }
+
+        .particle:nth-child(3n+1) {
+            background: radial-gradient(circle, rgba(255, 0, 0, 1) 0%, rgba(255, 0, 0, 0.8) 50%, transparent 100%);
+            box-shadow: 
+                0 0 15px rgba(255, 0, 0, 1),
+                0 0 25px rgba(255, 0, 0, 0.8),
+                0 0 40px rgba(255, 0, 0, 0.5);
+        }
+
+        .particle:nth-child(3n+2) {
+            background: radial-gradient(circle, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0.9) 50%, transparent 100%);
+            box-shadow: 
+                0 0 15px rgba(255, 255, 255, 1),
+                0 0 25px rgba(255, 255, 255, 0.8),
+                0 0 40px rgba(255, 255, 255, 0.5);
+        }
+
+        .particle:nth-child(3n) {
+            background: radial-gradient(circle, rgba(192, 192, 192, 1) 0%, rgba(192, 192, 192, 0.8) 50%, transparent 100%);
+            box-shadow: 
+                0 0 15px rgba(192, 192, 192, 1),
+                0 0 25px rgba(211, 211, 211, 0.8),
+                0 0 40px rgba(192, 192, 192, 0.5);
+        }
+
+        .particle:nth-child(1) {
+            left: 10%;
+            animation-delay: 0s;
+            animation-duration: 12s;
+        }
+
+        .particle:nth-child(2) {
+            left: 20%;
+            animation-delay: 1s;
+            animation-duration: 18s;
+        }
+
+        .particle:nth-child(3) {
+            left: 30%;
+            animation-delay: 2s;
+            animation-duration: 14s;
+        }
+
+        .particle:nth-child(4) {
+            left: 40%;
+            animation-delay: 0.5s;
+            animation-duration: 16s;
+        }
+
+        .particle:nth-child(5) {
+            left: 50%;
+            animation-delay: 1.5s;
+            animation-duration: 13s;
+        }
+
+        .particle:nth-child(6) {
+            left: 60%;
+            animation-delay: 2.5s;
+            animation-duration: 17s;
+        }
+
+        .particle:nth-child(7) {
+            left: 70%;
+            animation-delay: 0.8s;
+            animation-duration: 15s;
+        }
+
+        .particle:nth-child(8) {
+            left: 80%;
+            animation-delay: 1.8s;
+            animation-duration: 19s;
+        }
+
+        .particle:nth-child(9) {
+            left: 90%;
+            animation-delay: 2.2s;
+            animation-duration: 11s;
+        }
+
+        .particle:nth-child(10) {
+            left: 15%;
+            animation-delay: 0.3s;
+            animation-duration: 20s;
+        }
+
+        .particle:nth-child(11) {
+            left: 25%;
+            animation-delay: 1.2s;
+            animation-duration: 14s;
+        }
+
+        .particle:nth-child(12) {
+            left: 35%;
+            animation-delay: 2.8s;
+            animation-duration: 16s;
+        }
+
+        .particle:nth-child(13) {
+            left: 45%;
+            animation-delay: 0.7s;
+            animation-duration: 18s;
+        }
+
+        .particle:nth-child(14) {
+            left: 55%;
+            animation-delay: 1.7s;
+            animation-duration: 12s;
+        }
+
+        .particle:nth-child(15) {
+            left: 65%;
+            animation-delay: 2.3s;
+            animation-duration: 15s;
+        }
+
+        .particle:nth-child(16) {
+            left: 75%;
+            animation-delay: 0.9s;
+            animation-duration: 17s;
+        }
+
+        .particle:nth-child(17) {
+            left: 85%;
+            animation-delay: 1.4s;
+            animation-duration: 13s;
+        }
+
+        .particle:nth-child(18) {
+            left: 95%;
+            animation-delay: 2.6s;
+            animation-duration: 19s;
+        }
+
+        .particle:nth-child(19) {
+            left: 5%;
+            animation-delay: 0.4s;
+            animation-duration: 16s;
+        }
+
+        .particle:nth-child(20) {
+            left: 50%;
+            animation-delay: 1.6s;
+            animation-duration: 14s;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) translateX(0) scale(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.7;
+            }
+            50% {
+                transform: translateY(50vh) translateX(50px) scale(1);
+                opacity: 1;
+            }
+            90% {
+                opacity: 0.7;
+            }
+            100% {
+                transform: translateY(-10vh) translateX(100px) scale(0);
+                opacity: 0;
+            }
+        }
+
+        .video-container { display: none !important; }
+
+        @media (max-width: 480px) {
+            .main-container {
+                padding: 12px;
+            }
+            
+            .action-panel {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 8px;
+            }
+            
+            .btn-group {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .btn-group .btn {
+                flex: 1;
+            }
+            
+            .shoulder-select-container {
+                width: 100%;
+            }
+            
+            .shoulder-btn {
+                width: 100%;
+            }
+            
+            .status-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 4px;
+            }
+            
+            .status-header .flex-grow {
+                display: none;
+            }
+            
+            .tabs.tabs-vertical {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+        }
+        
+        @media (max-width: 768px) and (min-width: 481px) {
+            .main-container {
+                max-width: 90%;
+            }
+            
+            .action-panel {
+                gap: 10px;
+            }
+            
+            .btn {
+                padding: 8px 12px;
+            }
+            
+            .settings-row > label {
+                flex-basis: 100%;
+            }
+        }
+
+        /* =========================
+           New professional UI (override)
+           ========================= */
+        :root{
+            --bg0:#06070b;
+            --bg1:#0b0d15;
+            --panel: rgba(16, 18, 28, 0.72);
+            --border: rgba(255,255,255,0.10);
+            --muted: rgba(255,255,255,0.62);
+            --text: rgba(255,255,255,0.92);
+            --accent: #ff2a55;
+            --accent-2:#7c3aed;
+            --shadow: 0 24px 80px rgba(0,0,0,0.6);
+        }
+
+        body{
+            padding: 22px;
+            background:
+                radial-gradient(1200px 800px at 20% 10%, rgba(124,58,237,0.14), transparent 55%),
+                radial-gradient(900px 650px at 80% 20%, rgba(255,42,85,0.12), transparent 55%),
+                linear-gradient(180deg, var(--bg0), var(--bg1));
+            color: var(--text);
+        }
+
+        .main-container{
+            max-width: 980px;
+            padding: 20px;
+            border-radius: 18px;
+            background: linear-gradient(180deg, rgba(18, 20, 31, 0.84), rgba(10, 12, 18, 0.82));
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+        }
+        .main-container::before{ display:none; }
+
+        .header{
+            padding-bottom: 14px;
+            margin-bottom: 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+        .header h1{
+            letter-spacing: 0.14em;
+            font-size: 1.35rem;
+            text-shadow: none;
+        }
+        .brand-red{ color: var(--accent); text-shadow: none; }
+
+        .sound-toggle-btn, .menu-btn{
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.12);
+            color: rgba(255,255,255,0.86);
+            border-radius: 12px;
+            padding: 10px 12px;
+        }
+        .sound-toggle-btn:hover, .menu-btn:hover{
+            border-color: rgba(255,255,255,0.18);
+            background: rgba(255,255,255,0.09);
+            transform: translateY(-1px);
+        }
+
+        .app-shell{
+            display: grid;
+            grid-template-columns: 190px 1fr;
+            gap: 16px;
+            align-items: start;
+            width: 100%;
+        }
+
+        .nav-tabs.tabs-vertical{
+            flex-direction: column;
+            flex-wrap: nowrap;
+            justify-content: flex-start;
+            gap: 8px;
+            width: auto;
+            padding: 12px;
+            border-bottom: none;
+            border-right: 1px solid rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.03);
+            border-radius: 16px;
+            position: sticky;
+            top: 0;
+        }
+
+        .tab-emoji{ display:none; }
+        .nav-tabs .tab-btn{
+            width: 100%;
+            min-width: 0;
+            padding: 12px 12px;
+            border-radius: 12px;
+            justify-content: flex-start;
+            font-family: 'Rajdhani', 'Orbitron', sans-serif;
+            font-size: 0.95rem;
+            letter-spacing: 0.02em;
+            color: rgba(255,255,255,0.70);
+        }
+        .nav-tabs .tab-btn:hover{
+            background: rgba(255,255,255,0.06);
+            color: rgba(255,255,255,0.92);
+        }
+        .nav-tabs .tab-btn.active{
+            background: linear-gradient(135deg, rgba(255,42,85,0.18), rgba(124,58,237,0.12));
+            border: 1px solid rgba(255,42,85,0.22);
+            color: rgba(255,255,255,0.95);
+            text-shadow: none;
+        }
+        .tab-btn.active::after{ display:none; }
+
+        .tab-content-wrapper{
+            max-height: none;
+            overflow: visible;
+            align-items: stretch;
+        }
+        .tab-content{
+            padding: 0;
+            gap: 12px;
+        }
+
+        /* About tab centering inside new layout */
+        #about.tab-content{
+            align-items: center;
+        }
+        #about .about-shuffle{
+            position: static;
+            width: 100%;
+            text-align: center;
+            margin: 10px 0 0;
+            transform: none;
+            left: auto;
+            top: auto;
+        }
+        #about .about-devs{
+            width: 100%;
+            max-width: 760px;
+            margin-left: auto;
+            margin-right: auto;
+            align-items: center;
+            padding-top: 18px;
+        }
+        #about .about-dev-card{
+            width: min(760px, 100%);
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .section-heading{
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.82rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.78);
+            margin: 4px 2px -4px;
+        }
+
+        .action-panel{
+            background: var(--panel);
+            border: 1px solid rgba(255,255,255,0.10);
+            border-radius: 16px;
+            padding: 14px 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+        }
+        .action-panel:hover{
+            border-color: rgba(255,255,255,0.15);
+            transform: translateY(-1px);
+        }
+        .action-panel label{
+            color: rgba(255,255,255,0.92);
+            letter-spacing: 0.02em;
+        }
+        .hotkey-info{ color: var(--muted); }
+
+        .btn{
+            border-radius: 12px;
+            padding: 10px 14px;
+        }
+        .btn-primary{
+            background: rgba(255,42,85,0.12);
+            border-color: rgba(255,42,85,0.40);
+            color: rgba(255,255,255,0.92);
+        }
+        .btn-primary:hover{
+            background: rgba(255,42,85,0.18);
+            box-shadow: 0 0 0 4px rgba(255,42,85,0.10);
+        }
+
+        .warning-card{
+            background: rgba(245, 158, 11, 0.08);
+            border: 1px solid rgba(245, 158, 11, 0.25);
+            color: rgba(255,255,255,0.90);
+            border-radius: 14px;
+        }
+
+        @media (max-width: 760px){
+            .app-shell{ grid-template-columns: 1fr; }
+            .nav-tabs.tabs-vertical{
+                position: static;
+                border-right: none;
+                border-bottom: 1px solid rgba(255,255,255,0.08);
+                flex-direction: row;
+                overflow-x: auto;
+                justify-content: flex-start;
+                width: 100%;
+            }
+            .nav-tabs .tab-btn{
+                width: auto;
+                white-space: nowrap;
+            }
+        }
+
+        /* ============================
+           V4 UI REMAKE (override layer)
+           Keeps existing IDs/classes so JS works.
+           ============================ */
+        :root{
+            --bg0:#05060a;
+            --bg1:#0a0c13;
+            --panel:rgba(14,16,26,.78);
+            --panel2:rgba(10,12,20,.62);
+            --stroke:rgba(255,255,255,.08);
+            --stroke2:rgba(255,255,255,.12);
+            --text:#e9ebf3;
+            --muted:rgba(233,235,243,.66);
+            --brand:#ff2d55;
+            --brand2:#9b5cff;
+            --ok:#33d69f;
+            --warn:#ffb020;
+            --shadow: 0 28px 80px rgba(0,0,0,.60);
+            --shadow2: 0 14px 45px rgba(0,0,0,.45);
+            --r12:12px;
+            --r16:16px;
+            --r20:20px;
+            --focus: 0 0 0 3px rgba(255,45,85,.25);
+            --font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, "Rajdhani", sans-serif;
+        }
+
+        body{
+            font-family: var(--font) !important;
+            background:
+                radial-gradient(1200px 700px at 20% 10%, rgba(155,92,255,.18), transparent 58%),
+                radial-gradient(900px 620px at 80% 15%, rgba(255,45,85,.16), transparent 52%),
+                radial-gradient(900px 620px at 50% 95%, rgba(51,214,159,.08), transparent 55%),
+                linear-gradient(180deg, var(--bg0), var(--bg1)) !important;
+            color: var(--text) !important;
+            padding: 18px !important;
+        }
+
+        #particles-canvas{ opacity:.55 !important; }
+        .starfall{ opacity:.55 !important; }
+
+        .main-container{
+            max-width: 980px !important;
+            width: min(980px, 100%) !important;
+            padding: 20px !important;
+            border-radius: var(--r20) !important;
+            background: linear-gradient(180deg, rgba(18,20,32,.84), rgba(10,12,20,.78)) !important;
+            border: 1px solid var(--stroke) !important;
+            box-shadow: var(--shadow) !important;
+            overflow: hidden !important;
+        }
+        .main-container::before{ display:none !important; }
+
+        .header{
+            display:flex !important;
+            align-items:center !important;
+            justify-content:space-between !important;
+            gap: 14px !important;
+            padding: 14px 14px 16px !important;
+            margin: 0 0 12px !important;
+            border-radius: var(--r16) !important;
+            background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02)) !important;
+            border: 1px solid var(--stroke) !important;
+            box-shadow: var(--shadow2) !important;
+        }
+        .header h1{
+            letter-spacing: .08em !important;
+            font-weight: 800 !important;
+            font-size: 18px !important;
+            text-transform: uppercase !important;
+            display:flex !important;
+            align-items:baseline !important;
+            gap: 10px !important;
+        }
+        .brand-red{
+            color: var(--text) !important;
+            position: relative !important;
+        }
+        .brand-red::after{
+            content:"";
+            display:inline-block;
+            width: 10px;
+            height: 10px;
+            margin-left: 10px;
+            border-radius: 999px;
+            background: radial-gradient(circle at 30% 30%, #fff, rgba(255,255,255,.18) 35%, transparent 60%),
+                        radial-gradient(circle at 55% 55%, rgba(255,45,85,1), rgba(255,45,85,.22) 55%, transparent 70%);
+            box-shadow: 0 0 18px rgba(255,45,85,.35);
+            transform: translateY(-1px);
+        }
+
+        .menu-btn,
+        .sound-toggle-btn{
+            border-radius: 999px !important;
+            border: 1px solid var(--stroke) !important;
+            background: rgba(255,255,255,.05) !important;
+            color: var(--text) !important;
+            padding: 10px 12px !important;
+            min-height: 38px !important;
+            line-height: 1 !important;
+            cursor: pointer !important;
+        }
+        .menu-btn:hover,
+        .sound-toggle-btn:hover{
+            transform: translateY(-1px) !important;
+            border-color: var(--stroke2) !important;
+            background: rgba(255,255,255,.07) !important;
+        }
+        .menu-btn:focus-visible,
+        .sound-toggle-btn:focus-visible{ outline: none !important; box-shadow: var(--focus) !important; }
+
+        .app-shell{
+            display:grid !important;
+            grid-template-columns: 240px 1fr !important;
+            gap: 14px !important;
+            align-items: start !important;
+        }
+        .tab-content-wrapper{
+            padding: 14px !important;
+            border-radius: var(--r16) !important;
+            border: 1px solid var(--stroke) !important;
+            background: rgba(255,255,255,.03) !important;
+            min-height: 520px !important;
+        }
+
+        .tabs{
+            padding: 14px !important;
+            border-radius: var(--r16) !important;
+            border: 1px solid var(--stroke) !important;
+            background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02)) !important;
+            position: sticky !important;
+            top: 18px !important;
+        }
+        .tabs-vertical{ flex-direction: column !important; gap: 10px !important; }
+        .tab-btn{
+            width: 100% !important;
+            display:flex !important;
+            align-items:center !important;
+            gap: 10px !important;
+            justify-content:flex-start !important;
+            padding: 12px 12px !important;
+            border-radius: 12px !important;
+            border: 1px solid transparent !important;
+            background: rgba(255,255,255,.02) !important;
+            color: rgba(233,235,243,.86) !important;
+            cursor:pointer !important;
+        }
+        .tab-btn:hover{
+            background: rgba(255,255,255,.05) !important;
+            border-color: rgba(255,255,255,.08) !important;
+            transform: translateY(-1px) !important;
+        }
+        .tab-btn.active{
+            background:
+                radial-gradient(120% 140% at 10% 0%, rgba(155,92,255,.18), transparent 55%),
+                radial-gradient(130% 160% at 85% 15%, rgba(255,45,85,.16), transparent 60%),
+                rgba(255,255,255,.04) !important;
+            border-color: rgba(255,45,85,.22) !important;
+            box-shadow: 0 10px 26px rgba(255,45,85,.10) !important;
+        }
+        .tab-emoji{ filter: drop-shadow(0 0 10px rgba(255,45,85,.18)); }
+        .tab-label{ font-weight: 700 !important; letter-spacing: .02em !important; }
+
+        .action-panel{
+            border-radius: var(--r16) !important;
+            border: 1px solid var(--stroke) !important;
+            background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02)) !important;
+            box-shadow: 0 14px 38px rgba(0,0,0,.24) !important;
+            padding: 14px 14px !important;
+            gap: 14px !important;
+        }
+        .action-panel label{
+            font-weight: 800 !important;
+            letter-spacing: .02em !important;
+        }
+        .hotkey-info{ color: var(--muted) !important; }
+        .hotkey-assigned{
+            color: rgba(255,255,255,.92) !important;
+            background: rgba(255,255,255,.06) !important;
+            border: 1px solid rgba(255,255,255,.08) !important;
+            padding: 2px 8px !important;
+            border-radius: 999px !important;
+        }
+
+        .btn{
+            border-radius: 12px !important;
+            border: 1px solid var(--stroke) !important;
+            background: rgba(255,255,255,.04) !important;
+            color: var(--text) !important;
+            padding: 10px 12px !important;
+            cursor:pointer !important;
+        }
+        .btn:hover{
+            transform: translateY(-1px) !important;
+            border-color: var(--stroke2) !important;
+            background: rgba(255,255,255,.06) !important;
+        }
+        .btn:focus-visible{ outline:none !important; box-shadow: var(--focus) !important; }
+        .btn-primary{
+            border-color: rgba(255,45,85,.28) !important;
+            background: linear-gradient(135deg, rgba(255,45,85,.28), rgba(155,92,255,.20)) !important;
+        }
+        .btn-secondary{
+            border-color: rgba(155,92,255,.28) !important;
+            background: linear-gradient(135deg, rgba(155,92,255,.24), rgba(255,255,255,.04)) !important;
+        }
+
+        .toggle-wrap{ transform: scale(1.03); }
+        .toggle-slider{
+            background: rgba(255,255,255,.12) !important;
+            border: 1px solid rgba(255,255,255,.12) !important;
+        }
+        .toggle-input:checked + .toggle-slider{
+            background: linear-gradient(135deg, rgba(255,45,85,.95), rgba(155,92,255,.85)) !important;
+            box-shadow: 0 0 0 3px rgba(255,45,85,.14), 0 10px 30px rgba(255,45,85,.15) !important;
+        }
+
+        #aimfov-slider{ accent-color: var(--brand) !important; }
+        .slider-value{
+            background: rgba(255,255,255,.06) !important;
+            border: 1px solid rgba(255,255,255,.10) !important;
+            border-radius: 10px !important;
+            padding: 6px 10px !important;
+            min-width: 44px !important;
+            text-align:center !important;
+        }
+
+        .esp-warning{
+            border-radius: var(--r16) !important;
+            border: 1px solid rgba(255,176,32,.28) !important;
+            background: linear-gradient(180deg, rgba(255,176,32,.10), rgba(255,176,32,.04)) !important;
+            color: rgba(255,224,175,.95) !important;
+        }
+
+        .console{
+            margin-top: 14px !important;
+            border-radius: var(--r16) !important;
+            border: 1px solid var(--stroke) !important;
+            background: rgba(255,255,255,.03) !important;
+            box-shadow: 0 18px 48px rgba(0,0,0,.30) !important;
+            overflow:hidden !important;
+        }
+        .console-header{
+            background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02)) !important;
+            border-bottom: 1px solid rgba(255,255,255,.06) !important;
+        }
+        .console-body{
+            background: rgba(0,0,0,.20) !important;
+        }
+        .console-log .time{ color: rgba(255,255,255,.55) !important; }
+
+        .menu-dropdown{
+            border-radius: 14px !important;
+            border: 1px solid var(--stroke) !important;
+            background: rgba(14,16,26,.88) !important;
+            backdrop-filter: blur(18px) !important;
+            box-shadow: var(--shadow2) !important;
+        }
+        .menu-item:hover{
+            background: rgba(255,255,255,.06) !important;
+        }
+        .devs-modal{
+            border-radius: 18px !important;
+            border: 1px solid rgba(255,255,255,.10) !important;
+            background: rgba(14,16,26,.92) !important;
+            backdrop-filter: blur(20px) !important;
+        }
+
+        .about-dev-card{
+            border-radius: 18px !important;
+            border: 1px solid var(--stroke) !important;
+            background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02)) !important;
+        }
+        .about-dev-link{
+            border-radius: 999px !important;
+            border: 1px solid rgba(255,255,255,.10) !important;
+            background: rgba(255,255,255,.04) !important;
+        }
+        .about-dev-link:hover{
+            border-color: rgba(255,45,85,.25) !important;
+            background: rgba(255,45,85,.08) !important;
+        }
+
+        @media (max-width: 880px){
+            .main-container{ padding: 16px !important; }
+            .app-shell{ grid-template-columns: 1fr !important; }
+            .tabs{
+                position: relative !important;
+                top: auto !important;
+                display:flex !important;
+                gap: 10px !important;
+                overflow:auto !important;
+                white-space: nowrap !important;
+            }
+            .tabs-vertical{ flex-direction: row !important; }
+            .tab-btn{ width: auto !important; }
+            .tab-content-wrapper{ min-height: auto !important; }
+        }
+    </style>
+</head>
+<body>
+    <div id="notification-container"></div>
+    
+    <!-- Menu dropdown -->
+    <div class="menu-dropdown" id="top-menu">
+        <div class="menu-item" id="menu-logout">
+            <span class="label"><i class="fas fa-sign-out-alt"></i><span class="menu-emoji">🔒</span> Logout</span>
+            <span class="shortcut">ESC</span>
+        </div>
+        <div class="menu-divider"></div>
+        <div class="menu-item" id="menu-devs">
+            <span class="label"><i class="fas fa-users"></i><span class="menu-emoji">👥</span> About devs</span>
+            <span class="shortcut">F1</span>
+        </div>
+    </div>
+
+    <!-- About devs modal -->
+    <div class="devs-modal-backdrop" id="devs-modal">
+        <div class="devs-modal">
+            <div class="devs-header">
+                    <h2><span class="menu-emoji">💎</span> CREATORS</h2>
+                <button class="devs-close-btn" id="devs-close">&times;</button>
+            </div>
+            <div class="devs-grid">
+                <div class="dev-card">
+                    <div class="dev-top">
+                        <div class="dev-avatar">
+                            <!-- Replace src with actual ANSARI CHEATS image path if available -->
+                            <img src="./bg main/mainpagbg.jpeg" alt="ANSARI CHEATS avatar">
+                        </div>
+                        <div>
+                            <div class="dev-name">ANSARI CHEATS</div>
+                            <div class="dev-role">Lead cheat & UI developer</div>
+                        </div>
+                    </div>
+                    <div class="dev-body">
+                        Focused on building smooth, streamer‑friendly experiences with a clean,
+                        reactive UI. Handles most of the panel design, game integration and
+                        overall user flow so everything feels fast and effortless to use.
+                    </div>
+                </div>
+
+                <div class="dev-card">
+                    <div class="dev-top">
+                        <div class="dev-avatar">
+                            <!-- Replace src with actual ANSARI CHEATS image path if available -->
+                            <img src="./bg main/mainpagbg.jpeg" alt="ANSARI CHEATS avatar">
+                        </div>
+                        <div>
+                            <div class="dev-name">ANSARI CHEATS</div>
+                            <div class="dev-role">Backend & systems engineer</div>
+                        </div>
+                    </div>
+                    <div class="dev-body">
+                        Specialised in backend logic, security layers and automation.
+                        Keeps the ANSARI CHEATS client stable, updates the injection / bypass
+                        logic and makes sure everything connects reliably in live matches.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Starfall background -->
+    <div class="starfall" id="starfall" aria-hidden="true"></div>
+
+    <div id="video-container" class="video-container" style="display:none;">
+        <audio id="success-sound" style="display:none;" preload="auto">
+            <source src="./video sound/holy_shit_128kbps.mp3" type="audio/mpeg">
+        </audio>
+    </div>
+    
+    <!-- Animated Particles Background -->
+    <canvas id="particles-canvas"></canvas>
+    
+    <div class="particles-container">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+    
+    <div class="main-container">
+        <header class="header">
+            <h1><span class="brand-red">ANSARI CHEATS</span></h1>
+            <div style="display:flex; gap:10px; align-items:center;">
+                <button id="sound-toggle" class="sound-toggle-btn" type="button" aria-pressed="false">Enable sound</button>
+                <button id="about-back-btn" class="sound-toggle-btn" type="button" style="display:none;">Back</button>
+                <button class="menu-btn"><i class="fas fa-bars"></i></button>
+            </div>
+        </header>
+
+        <div class="app-shell">
+            <div class="tabs tabs-vertical nav-tabs">
+                <button class="tab-btn active" data-tab="headshot"><span class="tab-emoji">💥</span><span class="tab-label">Headshot</span></button>
+                <button class="tab-btn" data-tab="esp"><span class="tab-emoji">📡</span><span class="tab-label">ESP</span></button>
+                <button class="tab-btn" data-tab="settings"><span class="tab-emoji">🔐</span><span class="tab-label">Settings</span></button>
+                <button class="tab-btn" data-tab="about"><span class="tab-emoji">🌟</span><span class="tab-label">About</span></button>
+            </div>
+
+            <div class="tab-content-wrapper">
+            <div id="headshot" class="tab-content active">
+                <div class="action-panel">
+                    <div>
+                        <label>Emulator [ ADB ]</label>
+                        <p class="hotkey-info">Hotkey: <span class="hotkey-assigned" id="adb-hotkey-display">F12</span></p>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-secondary" onclick="sendCommand('connectemu')">Connect</button>
+                        <button class="btn btn-primary" onclick="sendCommand('bypasspc')">Bypass PC</button>
+                    </div>
+                </div>
+                <div class="action-panel">
+                    <div>
+                        <label>Enable Function</label>
+                        <p class="hotkey-info">Enable aimbot function</p>
+                    </div>
+                    <label class="toggle-wrap">
+                        <input type="checkbox" class="toggle-input" data-on-cmd="enablefunction" data-off-cmd="enablefunctionoff" data-type="esp">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="action-panel">
+                    <div>
+                        <label>Aimbot Rage</label>
+                        <p class="hotkey-info">Rage mode aimbot</p>
+                    </div>
+                    <label class="toggle-wrap">
+                        <input type="checkbox" class="toggle-input" data-on-cmd="aimbotrage" data-off-cmd="aimbotrageoff" data-type="esp">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="action-panel">
+                    <div>
+                        <label>Aimbot Visible</label>
+                        <p class="hotkey-info">Visible aimbot overlay</p>
+                    </div>
+                    <label class="toggle-wrap">
+                        <input type="checkbox" class="toggle-input" data-on-cmd="aimbotvisible" data-off-cmd="aimbotvisibleoff" data-type="esp">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="action-panel">
+                    <div>
+                        <label>Aim FOV</label>
+                        <p class="hotkey-info">Adjust aimbot field of view</p>
+                    </div>
+                    <div class="slider-container" style="flex:1; max-width:260px;">
+                        <input type="range" id="aimfov-slider" min="1" max="360" value="90" oninput="updateAimFOV(this.value)">
+                        <span class="slider-value" id="aimfov-value">90</span>
+                    </div>
+                </div>
+                <div class="action-panel">
+                    <div>
+                        <label>Draw FOV</label>
+                        <p class="hotkey-info">Display aimbot FOV circle</p>
+                    </div>
+                    <label class="toggle-wrap">
+                        <input type="checkbox" class="toggle-input" data-on-cmd="drawfov" data-off-cmd="drawfovoff" data-type="esp">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <div id="esp" class="tab-content">
+                <div id="esp-warning" class="esp-warning">
+                    ESP is disabled. Enable ESP in Settings to access these features.
+                </div>
+                
+                <div class="esp-grid">
+                    <div class="action-panel esp-feature">
+                        <div>
+                            <label>Esp line</label>
+                            <p class="hotkey-info">Hotkey: <span class="hotkey-assigned" id="line-hotkey-display">Ctrl+L</span></p>
+                        </div>
+                        <label class="toggle-wrap">
+                            <input type="checkbox" class="toggle-input" data-on-cmd="esplineon" data-off-cmd="esplineoff" data-type="esp">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="action-panel esp-feature">
+                        <div>
+                            <label>Esp box</label>
+                            <p class="hotkey-info">Hotkey: <span class="hotkey-assigned" id="box-hotkey-display">Ctrl+B</span></p>
+                        </div>
+                        <label class="toggle-wrap">
+                            <input type="checkbox" class="toggle-input" data-on-cmd="espboxon" data-off-cmd="espboxoff" data-type="esp">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="action-panel esp-feature">
+                        <div>
+                            <label>Esp health</label>
+                            <p class="hotkey-info">Hotkey: <span class="hotkey-assigned" id="health-hotkey-display">Ctrl+H</span></p>
+                        </div>
+                        <label class="toggle-wrap">
+                            <input type="checkbox" class="toggle-input" data-on-cmd="esphealth" data-off-cmd="esphealthoff" data-type="esp">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="action-panel esp-feature">
+                        <div>
+                            <label>Esp skeleton</label>
+                            <p class="hotkey-info">Display player skeleton</p>
+                        </div>
+                        <label class="toggle-wrap">
+                            <input type="checkbox" class="toggle-input" data-on-cmd="espskeleton" data-off-cmd="espskeletonoff" data-type="esp">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="action-panel esp-feature">
+                        <div>
+                            <label>Esp aim track</label>
+                            <p class="hotkey-info">Track aim target line</p>
+                        </div>
+                        <label class="toggle-wrap">
+                            <input type="checkbox" class="toggle-input" data-on-cmd="espaimtrack" data-off-cmd="espaimtrackoff" data-type="esp">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div id="settings" class="tab-content">
+                <div class="action-panel">
+                    <div><label>64-bit Architecture</label><p class="hotkey-info">32-bit / 64-bit</p></div>
+                    <label class="toggle-wrap">
+                        <input type="checkbox" class="toggle-input" data-on-cmd="64bit" data-off-cmd="32bit" data-type="cmd">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="action-panel">
+                    <div><label>Panel Checker Bypass</label><p class="hotkey-info">Bypass security checks</p></div>
+                    <label class="toggle-wrap">
+                        <input type="checkbox" class="toggle-input" data-on-cmd="bypass_enable" data-off-cmd="bypass_disable" data-type="cmd">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="action-panel">
+                    <div><label>Notification Mode</label><p class="hotkey-info">Set notification preferences</p></div>
+                    <label class="toggle-wrap">
+                        <input type="checkbox" class="toggle-input" id="notification-toggle" data-on-cmd="notification" data-off-cmd="off" data-type="notification">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+
+                <div class="section-heading">Advanced</div>
+                <div class="warning-card">The features below have ban risk</div>
+                <div class="action-panel">
+                    <div>
+                        <label>Control Logs</label>
+                        <p class="hotkey-info">Hotkey: <span class="hotkey-assigned" id="logs-hotkey-display">F10</span></p>
+                    </div>
+                    <button class="btn btn-primary" onclick="sendCommand('bypasspc')">Enable</button>
+                </div>
+                <div class="action-panel">
+                    <div>
+                        <label>Emulator Network</label>
+                        <p class="hotkey-info">Hotkey: <span class="hotkey-assigned" id="network-hotkey-display">F11</span></p>
+                    </div>
+                    <label class="toggle-wrap">
+                        <input type="checkbox" class="toggle-input" data-on-cmd="unblockint" data-off-cmd="blockint" data-type="cmd">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <div id="about" class="tab-content" style="position:relative;">
+                <div class="about-shuffle">
+                    <span id="about-shuffle-text" class="about-shuffle-text"></span>
+                </div>
+
+                <div class="about-devs">
+                    <div class="about-dev-card">
+                        <img id="about-img-harsh" alt="ANSARI CHEATS" class="about-dev-img">
+                        <div style="flex:1;">
+                            <div class="about-dev-name">ANSARI CHEATS</div>
+                            <div class="about-dev-role">Founder</div>
+                            <p class="about-dev-desc">
+                                Handles backend, security layers and live match stability so the ANSARI CHEATS client
+                                stays smooth and reliable.
+                            </p>
+                        </div>
+                        <div class="about-dev-links">
+                            <a class="about-dev-link about-link-contact" href="https://discord.gg/DQUfDEDUGw" target="_blank" rel="noopener noreferrer">Contact</a>
+                            <a class="about-dev-link about-link-instagram" href="https://www.instagram.com/exa_expert/" target="_blank" rel="noopener noreferrer">Instagram</a>
+                        </div>
+                    </div>
+
+                    <div class="about-dev-card">
+                        <img id="about-img-shark" alt="ANSARI CHEATS" class="about-dev-img">
+                        <div style="flex:1;">
+                            <div class="about-dev-name">ANSARI CHEATS</div>
+                            <div class="about-dev-role">Founder</div>
+                            <p class="about-dev-desc">
+                                Focused on UI/UX and feature design, keeping the panel clean, modern and easy
+                                to use during streams.
+                            </p>
+                        </div>
+                        <div class="about-dev-links">
+                            <a class="about-dev-link about-link-contact" href="https://discord.gg/DQUfDEDUGw" target="_blank" rel="noopener noreferrer">Contact</a>
+                            <a class="about-dev-link about-link-instagram" href="https://www.instagram.com/shark/" target="_blank" rel="noopener noreferrer">Instagram</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Console Section (settings ke niche, center column) -->
+            <div class="console">
+                <div class="console-header">
+                    <span>Console</span>
+                    <i class="fas fa-chevron-up"></i>
+                </div>
+                <div class="console-body" id="console-output">
+                    <div class="console-log">
+                    </div>
+                    <div class="console-log">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+            </div> <!-- end tab-content-wrapper -->
+        </div> <!-- end app-shell -->
+
+    <script>
+        // Protection: direct URL se index.html open hone par login pe bhejo (bypass na ho)
+        (function() {
+            var xhr = new XMLHttpRequest();
+            xhr.withCredentials = true;
+            xhr.open('GET', '/check-auth', false);
+            try {
+                xhr.send();
+                if (xhr.status === 401) {
+                    window.location.replace('/');
+                    return;
+                }
+                if (xhr.status === 200 && xhr.responseText) {
+                    var data = JSON.parse(xhr.responseText);
+                    if (data.authenticated === false) {
+                        window.location.replace('/');
+                        return;
+                    }
+                }
+            } catch (e) {
+                // Parse/network error: redirect mat karo, taaki login ke baad logout na ho
+            }
+        })();
+
+        // Global settings
+        let settings = {
+            notificationMode: 'notification',
+            espEnabled: false,
+            hotkeysEnabled: true,
+            hotkeyBindings: {
+                visible: 'F1',
+                rage: 'F2',
+                scan: 'F7',
+                neck: 'F8',
+                default: 'F9',
+                hsOn: 'Ctrl+H',
+                hsOff: 'Ctrl+Shift+H',
+                logs: 'F10',
+                network: 'F11',
+                adb: 'F12',
+                line: 'Ctrl+L',
+                box: 'Ctrl+B',
+                health: 'Ctrl+H'
+            }
+        };
+
+        // Player status monitoring variables
+        let playerStatusInterval;
+        let lastStatus = null;
+        let statusCheckCount = 0;
+
+        // Load settings from localStorage
+        function loadSettings() {
+            const savedSettings = localStorage.getItem('appSettings');
+            if (savedSettings) {
+                const parsedSettings = JSON.parse(savedSettings);
+                settings = {...settings, ...parsedSettings};
+            }
+        }
+
+        // Save settings to localStorage
+        function saveSettings() {
+            localStorage.setItem('appSettings', JSON.stringify(settings));
+        }
+
+        // Initialize settings
+        loadSettings();
+
+        // Sound handling (Chrome/Edge autoplay-safe)
+        let soundEnabled = false;
+        let pendingLoginSuccessSound = false;
+
+        function loadSoundPrefs() {
+            try {
+                soundEnabled = localStorage.getItem('soundEnabled') === '1';
+            } catch (e) {
+                soundEnabled = false;
+            }
+        }
+
+        function saveSoundPrefs() {
+            try {
+                localStorage.setItem('soundEnabled', soundEnabled ? '1' : '0');
+            } catch (e) {}
+        }
+
+        function updateSoundButtonUI() {
+            const btn = document.getElementById('sound-toggle');
+            if (!btn) return;
+            btn.setAttribute('aria-pressed', soundEnabled ? 'true' : 'false');
+            btn.textContent = soundEnabled ? 'Sound enabled' : 'Enable sound';
+        }
+
+        async function tryPlayLoginSuccessSound() {
+            const sound = document.getElementById('success-sound');
+            if (!sound) return;
+
+            // Only play if login requested it
+            if (!pendingLoginSuccessSound) return;
+
+            if (!soundEnabled) {
+                showNotification('Sound is off. Click "Enable sound" to play.');
+                return;
+            }
+
+            try {
+                // Ensure the browser actually loads the source
+                try { sound.load(); } catch (e) {}
+                sound.pause();
+                sound.currentTime = 0;
+                sound.volume = 1.0;
+                sound.muted = false;
+                await sound.play();
+                pendingLoginSuccessSound = false;
+            } catch (err) {
+                showNotification('Click "Enable sound" to allow audio.');
+            }
+        }
+
+        function setupAutoplayFallbackGestures() {
+            const handler = () => {
+                // If autoplay was blocked, first gesture should start it instantly.
+                tryPlayLoginSuccessSound();
+            };
+            document.addEventListener('pointerdown', handler, { once: true, passive: true });
+            document.addEventListener('keydown', handler, { once: true });
+            document.addEventListener('touchstart', handler, { once: true, passive: true });
+        }
+
+        function tryAutoplayBurst() {
+            // Multiple attempts to maximize chance after load/paint
+            tryPlayLoginSuccessSound();
+            setTimeout(tryPlayLoginSuccessSound, 150);
+            setTimeout(tryPlayLoginSuccessSound, 600);
+        }
+
+        let selectedPosition = 'right';
+        let headshotEnabled = false;
+        let aimbotVersion = 'version-1';
+        let isTabOpen = false;
+        let hotkeyEnabled = true;
+        let pressedKeys = new Set();
+        let hotkeyStates = {
+            aimbot: false
+        };
+
+        // Initialize hotkey displays
+        function initHotkeyDisplays() {
+            document.getElementById('scan-hotkey-display').textContent = settings.hotkeyBindings.scan;
+            document.getElementById('neck-hotkey-display').textContent = settings.hotkeyBindings.neck;
+            document.getElementById('default-hotkey-display').textContent = settings.hotkeyBindings.default;
+            document.getElementById('hson-hotkey-display').textContent = settings.hotkeyBindings.hsOn;
+            document.getElementById('hsoff-hotkey-display').textContent = settings.hotkeyBindings.hsOff;
+            document.getElementById('logs-hotkey-display').textContent = settings.hotkeyBindings.logs;
+            document.getElementById('network-hotkey-display').textContent = settings.hotkeyBindings.network;
+            document.getElementById('adb-hotkey-display').textContent = settings.hotkeyBindings.adb;
+            document.getElementById('line-hotkey-display').textContent = settings.hotkeyBindings.line;
+            document.getElementById('box-hotkey-display').textContent = settings.hotkeyBindings.box;
+            document.getElementById('health-hotkey-display').textContent = settings.hotkeyBindings.health;
+        }
+        
+        // Save hotkey settings
+        function saveHotkeySettings() {
+            settings.hotkeyBindings.scan = document.getElementById('hotkey-scan').value;
+            settings.hotkeyBindings.neck = document.getElementById('hotkey-neck').value;
+            settings.hotkeyBindings.default = document.getElementById('hotkey-default').value;
+            settings.hotkeyBindings.hsOn = document.getElementById('hotkey-hs-on').value;
+            settings.hotkeyBindings.hsOff = document.getElementById('hotkey-hs-off').value;
+            
+            saveSettings();
+            initHotkeyDisplays();
+            updateConsole("Hotkey settings saved");
+            showNotification("Hotkey settings saved successfully");
+        }
+        
+        // Toggle hotkeys
+        function toggleHotkeys(enabled) {
+            settings.hotkeysEnabled = enabled;
+            saveSettings();
+            updateConsole(`Hotkeys ${enabled ? 'enabled' : 'disabled'}`);
+            showNotification(`Hotkeys ${enabled ? 'ENABLED' : 'DISABLED'}`);
+        }
+
+        // Notification system
+        function showNotification(message) {
+            if (settings.notificationMode === 'off') return;
+            
+            const notificationContainer = document.getElementById('notification-container');
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.textContent = message;
+            
+            notificationContainer.appendChild(notification);
+            
+            // Show notification
+            setTimeout(() => {
+                notification.classList.add('show');
+            }, 10);
+            
+            // Hide after 3 seconds
+            setTimeout(() => {
+                notification.classList.remove('show');
+                notification.classList.add('hide');
+                
+                // Remove after animation completes
+                setTimeout(() => {
+                    notification.remove();
+                }, 300);
+            }, 3000);
+        }
+
+        // Toggle ESP
+        function toggleEsp(enable) {
+            settings.espEnabled = enable;
+            saveSettings();
+            
+            // Update UI
+            updateEspUI();
+            
+            // Show/hide ESP features
+            const espFeatures = document.querySelectorAll('.esp-feature');
+            espFeatures.forEach(feature => {
+                feature.style.display = enable ? 'flex' : 'none';
+            });
+            
+            // Update warning message
+            const espWarning = document.getElementById('esp-warning');
+            if (espWarning) {
+                espWarning.style.display = enable ? 'none' : 'block';
+            }
+        }
+
+        // Update ESP UI
+        function updateEspUI() {
+            const espGroup = document.getElementById('esp-toggle-group');
+            if (!espGroup) return;
+            
+            const buttons = espGroup.querySelectorAll('.btn');
+            buttons.forEach(button => {
+                button.classList.remove('btn-primary');
+                button.classList.add('btn-secondary');
+                
+                if ((button.textContent === 'Enable' && settings.espEnabled) || 
+                    (button.textContent === 'Disable' && !settings.espEnabled)) {
+                    button.classList.remove('btn-secondary');
+                    button.classList.add('btn-primary');
+                }
+            });
+        }
+
+        // Send command to backend
+        async function sendCommand(command) {
+            const response = await fetch('/execute', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ command: command }),
+            });
+
+            const result = await response.json();
+            const outputText = result.output || "";
+            const out = `Command executed: ${command}`;
+            showNotification(out);
+
+            outputText.split("\n").forEach(line => {
+                if (line.trim()) updateConsole(line);
+            });
+        }
+
+        // Send ESP command directly to pipe (for features that go to C# pipe)
+        async function sendEspCommand(command) {
+            // First try to send via Python backend which will forward to pipe
+            const response = await fetch('/execute', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ command: command }),
+            });
+
+            const result = await response.json();
+            const outputText = result.output || "";
+            const out = `ESP command: ${command}`;
+            showNotification(out);
+
+            outputText.split("\n").forEach(line => {
+                if (line.trim()) updateConsole(line);
+            });
+        }
+
+        // Update Aim FOV
+        function updateAimFOV(value) {
+            document.getElementById('aimfov-value').textContent = value;
+            sendEspCommand(`aimfov:${value}`);
+            updateConsole(`Aim FOV set to: ${value}`);
+        }
+
+        // Update Silent Aim Mode
+        function updateSilentAimMode(modeIndex) {
+            sendEspCommand(`silentaim_mode:${modeIndex}`);
+            updateConsole(`Silent Aim mode set to: ${modeIndex}`);
+        }
+
+        // Update console
+        function updateConsole(message) {
+            const consoleElement = document.getElementById('console-output');
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            const fullMessage = `[${timeString}] ${message}`;
+            
+            const logEntry = document.createElement('div');
+            logEntry.className = 'console-log';
+            logEntry.innerHTML = `<span class="time">${timeString} : </span><span class="message">${message}</span>`;
+            
+            consoleElement.appendChild(logEntry);
+            consoleElement.scrollTop = consoleElement.scrollHeight;
+        }
+
+        // Shoulder selection
+        function selectShoulder(shoulder) {
+            selectedPosition = shoulder;
+            updateConsole(`Shoulder position set to: ${shoulder}`);
+            
+            // Update combobox text
+            const shoulderBtn = document.getElementById('shoulder-btn');
+            if (shoulderBtn) {
+                shoulderBtn.textContent = shoulder === 'right' ? 'Right Shoulder' : 'Left Shoulder';
+            }
+            
+            // Close menu
+            const shoulderMenu = document.getElementById('shoulder-menu');
+            if (shoulderMenu) {
+                shoulderMenu.classList.remove('open');
+            }
+        }
+
+        // Toggle shoulder aim
+        function toggleShoulderAim(enable) {
+            if (enable) {
+                sendCommand(selectedPosition + 'shoulderon');
+            } else {
+                sendCommand(selectedPosition + 'shoulderoff');
+            }
+        }
+
+        // Toggle headshot legit
+        function toggleHeadshotLegit(enable) {
+            if (enable) {
+                sendCommand(selectedPosition + 'shoulderon');
+            } else {
+                sendCommand(selectedPosition + 'shoulderoff');
+            }
+        }
+
+        // Scan enemies
+        function scanEnemies() {
+            updateConsole(`Aimbot Scan command received`);
+            sendCommand('aimbotscan');
+        }
+
+        // Update notification settings
+        function updateNotificationSettings(mode) {
+            settings.notificationMode = mode;
+            saveSettings();
+            updateNotificationUI();
+            updateConsole(`Notification mode set to: ${mode}`);
+        }
+
+        // Update notification UI (toggle)
+        function updateNotificationUI() {
+            const toggle = document.getElementById('notification-toggle');
+            if (!toggle) return;
+            toggle.checked = settings.notificationMode === 'notification';
+        }
+
+        // Toggle aimbot version
+        function toggleAimbotVersion(version) {
+            aimbotVersion = version;
+            updateConsole(`Aimbot version set to: ${version}`);
+        }
+
+        // Player status functions
+       async function checkPlayerStatus() {
+            try {
+                const startTime = performance.now();
+                const response = await fetch('/status');
+                const endTime = performance.now();
+                const ping = Math.round(endTime - startTime);
+                const result = await response.json();
+
+                const statusElement = document.getElementById('status');
+                const pingElement = document.getElementById('ping');
+                const statusBody = document.getElementById('status-body');
+                
+                statusCheckCount++;
+
+                if (result.status === "online") {
+                    if (lastStatus !== "online") {
+                        if (statusElement) { statusElement.textContent = 'Online'; statusElement.className = 'status-indicator status-online'; }
+                        if (statusBody) statusBody.textContent = 'Connected to ANSARI CHEATS Client';
+                        updateConsole("Process : Online");
+                        showNotification("Player is online");
+                        playSuccessVideo();
+                    }
+                    if (pingElement) pingElement.textContent = `• v1.7 (Pro) • ${ping} ms`;
+                } else {
+                    if (lastStatus !== "offline") {
+                        if (statusElement) { statusElement.textContent = 'Offline'; statusElement.className = 'status-indicator status-offline'; }
+                        if (statusBody) statusBody.textContent = 'Connected to ANSARI CHEATS Client';
+                        updateConsole("Process : Offline");
+                        showNotification("Player is offline");
+                    }
+                    if (pingElement) pingElement.textContent = `• v1.7 (Pro) • ${ping} ms`;
+                }
+                
+                lastStatus = result.status;
+
+            } catch (error) {
+                console.error('Error fetching status:', error);
+                const statusElement = document.getElementById('status');
+                const pingElement = document.getElementById('ping');
+                const statusBody = document.getElementById('status-body');
+                if (statusElement) { statusElement.textContent = 'Error'; statusElement.className = 'status-indicator status-error'; }
+                if (statusBody) statusBody.textContent = 'Connection error';
+                if (pingElement) pingElement.textContent = '• v7.7 (Pro) • -- ms';
+                updateConsole(`Status check error: ${error.message}`);
+            }
+        }
+
+        function playSuccessVideo() {
+            try {
+                const sound = document.getElementById('success-sound');
+                if (!sound) return;
+                if (soundEnabled) {
+                    sound.currentTime = 0;
+                    sound.volume = 1.0;
+                    sound.muted = false;
+                    sound.play().then(() => updateConsole('Success audio playing')).catch(e => updateConsole('Audio: ' + (e.message || 'blocked')));
+                }
+            } catch (err) { console.error('playSuccessVideo:', err); }
+        }
+
+        function startStatusMonitor() {
+            checkPlayerStatus();
+            playerStatusInterval = setInterval(checkPlayerStatus, 5000);
+        }
+
+        function stopStatusMonitor() {
+            if (playerStatusInterval) {
+                clearInterval(playerStatusInterval);
+            }
+        }
+
+
+        // Keyboard event listener for hotkeys
+        document.addEventListener('keydown', function(event) {
+            if (!settings.hotkeysEnabled) return;
+            if (event.repeat) return;
+            
+            const key = event.key.toUpperCase();
+            const ctrl = event.ctrlKey;
+            const shift = event.shiftKey;
+            const alt = event.altKey;
+            
+            // Helper to check if a hotkey matches
+            function matchesHotkey(hotkey) {
+                if (!hotkey) return false;
+                
+                const parts = hotkey.split('+').map(p => p.trim().toUpperCase());
+                let hasCtrl = parts.includes('CTRL');
+                let hasShift = parts.includes('SHIFT');
+                let hasAlt = parts.includes('ALT');
+                let keyPart = parts.find(p => !['CTRL', 'SHIFT', 'ALT'].includes(p));
+                
+                // Check modifiers
+                if (hasCtrl !== ctrl) return false;
+                if (hasShift !== shift) return false;
+                if (hasAlt !== alt) return false;
+                
+                // Check key
+                if (keyPart && key !== keyPart) return false;
+                
+                return true;
+            }
+
+            function toggleFeatureByOnCmd(onCmd) {
+                const checkbox = document.querySelector(`.toggle-input[data-on-cmd="${onCmd}"]`);
+                if (!checkbox) return false;
+                checkbox.checked = !checkbox.checked;
+                checkbox.dispatchEvent(new Event('change', { bubbles: true }));
+                return true;
+            }
+            
+            // Check all hotkeys
+            if (matchesHotkey(settings.hotkeyBindings.visible)) {
+                event.preventDefault();
+                toggleFeatureByOnCmd('aimbotvisible');
+            }
+            else if (matchesHotkey(settings.hotkeyBindings.rage)) {
+                event.preventDefault();
+                toggleFeatureByOnCmd('aimbotrage');
+            }
+            else if (matchesHotkey(settings.hotkeyBindings.scan)) {
+                event.preventDefault();
+                scanEnemies();
+            }
+            else if (matchesHotkey(settings.hotkeyBindings.neck)) {
+                event.preventDefault();
+                sendCommand('aimbotenable');
+            }
+            else if (matchesHotkey(settings.hotkeyBindings.default)) {
+                event.preventDefault();
+                sendCommand('aimbotdisable');
+            }
+            else if (matchesHotkey(settings.hotkeyBindings.hsOn)) {
+                event.preventDefault();
+                toggleHeadshotLegit(true);
+            }
+            else if (matchesHotkey(settings.hotkeyBindings.hsOff)) {
+                event.preventDefault();
+                toggleHeadshotLegit(false);
+            }
+            else if (matchesHotkey(settings.hotkeyBindings.logs)) {
+                event.preventDefault();
+                sendCommand('bypasspc');
+            }
+            else if (matchesHotkey(settings.hotkeyBindings.network)) {
+                event.preventDefault();
+                sendCommand('blockint');
+            }
+            else if (matchesHotkey(settings.hotkeyBindings.adb)) {
+                event.preventDefault();
+                sendCommand('connectemu');
+            }
+            else if (matchesHotkey(settings.hotkeyBindings.line)) {
+                event.preventDefault();
+                sendEspCommand('espline');
+            }
+            else if (matchesHotkey(settings.hotkeyBindings.box)) {
+                event.preventDefault();
+                sendEspCommand('espboxon');
+            }
+            else if (matchesHotkey(settings.hotkeyBindings.health)) {
+                event.preventDefault();
+                sendEspCommand('esphealth');
+            }
+        });
+
+        // Connected Particles Canvas Animation
+        function initConnectedParticles() {
+            const canvas = document.getElementById('particles-canvas');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            
+            const particles = [];
+            const particleCount = 50;
+            const connectionDistance = 150;
+            
+            class Particle {
+                constructor() {
+                    this.x = Math.random() * canvas.width;
+                    this.y = Math.random() * canvas.height;
+                    this.vx = (Math.random() - 0.5) * 0.5;
+                    this.vy = (Math.random() - 0.5) * 0.5;
+                    this.radius = Math.random() * 2 + 1;
+                }
+                
+                update() {
+                    this.x += this.vx;
+                    this.y += this.vy;
+                    
+                    if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+                    if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+                    
+                    this.x = Math.max(0, Math.min(canvas.width, this.x));
+                    this.y = Math.max(0, Math.min(canvas.height, this.y));
+                }
+                
+                draw() {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                    const gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.radius * 3);
+                    gradient.addColorStop(0, 'rgba(255, 0, 0, 1)');
+                    gradient.addColorStop(0.5, 'rgba(220, 20, 60, 0.8)');
+                    gradient.addColorStop(1, 'rgba(255, 0, 0, 0)');
+                    ctx.fillStyle = gradient;
+                    ctx.fill();
+                    ctx.shadowBlur = 15;
+                    ctx.shadowColor = 'rgba(255, 0, 0, 0.8)';
+                }
+            }
+            
+            // Create particles
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Particle());
+            }
+            
+            function drawConnections() {
+                for (let i = 0; i < particles.length; i++) {
+                    for (let j = i + 1; j < particles.length; j++) {
+                        const dx = particles[i].x - particles[j].x;
+                        const dy = particles[i].y - particles[j].y;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+                        
+                        if (distance < connectionDistance) {
+                            const opacity = (1 - distance / connectionDistance) * 0.3;
+                            ctx.beginPath();
+                            ctx.moveTo(particles[i].x, particles[i].y);
+                            ctx.lineTo(particles[j].x, particles[j].y);
+                            ctx.strokeStyle = `rgba(220, 20, 60, ${opacity})`;
+                            ctx.lineWidth = 1;
+                            ctx.stroke();
+                        }
+                    }
+                }
+            }
+            
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                particles.forEach(particle => {
+                    particle.update();
+                    particle.draw();
+                });
+                
+                drawConnections();
+                
+                requestAnimationFrame(animate);
+            }
+            
+            animate();
+            
+            window.addEventListener('resize', () => {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            });
+        }
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', () => {
+            // Starfall dots (3 colors)
+            (() => {
+                const wrap = document.getElementById('starfall');
+                if (!wrap) return;
+
+                const STAR_COUNT = 70;
+                const colors = ['star-red', 'star-white', 'star-gray'];
+                const rand = (min, max) => Math.random() * (max - min) + min;
+
+                for (let i = 0; i < STAR_COUNT; i++) {
+                    const el = document.createElement('div');
+                    el.className = `star ${colors[i % colors.length]}`;
+
+                    const size = rand(2, 4.2).toFixed(2) + 'px';
+                    const opacity = rand(0.35, 0.9).toFixed(2);
+                    const duration = rand(6, 14).toFixed(2) + 's';
+                    const delay = (-rand(0, 14)).toFixed(2) + 's';
+                    const x = rand(0, 100).toFixed(2) + 'vw';
+                    const drift = rand(-18, 18).toFixed(2) + 'vw';
+
+                    el.style.setProperty('--s', size);
+                    el.style.setProperty('--o', opacity);
+                    el.style.setProperty('--d', duration);
+                    el.style.setProperty('--delay', delay);
+                    el.style.setProperty('--x', x);
+                    el.style.setProperty('--drift', drift);
+
+                    wrap.appendChild(el);
+                }
+            })();
+
+            // About dev images: load from HEX txt via /devimage-hex
+            function hexStringToBytes(hexText) {
+                if (!hexText) return new Uint8Array(0);
+                // Remove 0x, commas and non-hex chars, keep only 0-9a-f
+                const cleaned = hexText
+                    .replace(/0x/gi, '')
+                    .replace(/[^0-9a-fA-F]/g, '');
+                const len = cleaned.length;
+                const bytes = new Uint8Array(len / 2);
+                for (let i = 0; i < len; i += 2) {
+                    bytes[i / 2] = parseInt(cleaned.substr(i, 2), 16);
+                }
+                return bytes;
+            }
+
+            async function loadDevHexImage(imgId, hexFile) {
+                try {
+                    const imgEl = document.getElementById(imgId);
+                    if (!imgEl) return;
+                    const res = await fetch('/devimage-hex/' + encodeURIComponent(hexFile));
+                    if (!res.ok) return;
+                    const data = await res.json();
+                    if (!data.hexData) return;
+                    const bytes = hexStringToBytes(data.hexData);
+                    if (!bytes.length) return;
+                    const blob = new Blob([bytes], { type: 'image/jpeg' });
+                    const url = URL.createObjectURL(blob);
+                    imgEl.src = url;
+                } catch (e) {
+                    console.error('Failed to load dev image', imgId, e);
+                }
+            }
+
+            // ANSARI CHEATS (ANSARI CHEATS IMAGE HEX.txt) & image 2.txt
+            loadDevHexImage('about-img-shark', 'ANSARI CHEATS IMAGE HEX.txt');
+            loadDevHexImage('about-img-harsh', 'image 2.txt');
+
+            // About tab shuffle text (random character spin → final text)
+            (function () {
+                const el = document.getElementById('about-shuffle-text');
+                if (!el) return;
+
+                const messages = [
+                    'WELCOME TO ANSARI CHEATS',
+                    'ANTI BAN PANEL',
+                    'ANSARI CHEATS ALWAYS ON TOP'
+                ];
+                const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#$%&';
+                let index = 0;
+
+                function scrambleTo(target, durationMs = 700, frameMs = 40) {
+                    const steps = Math.max(4, Math.floor(durationMs / frameMs));
+                    let frame = 0;
+                    const targetLen = target.length;
+
+                    const timer = setInterval(() => {
+                        frame++;
+                        let out = '';
+
+                        for (let i = 0; i < targetLen; i++) {
+                            const progress = frame / steps;
+                            const lockThreshold = progress * targetLen;
+
+                            if (i < lockThreshold) {
+                                out += target[i];
+                            } else {
+                                out += chars[Math.floor(Math.random() * chars.length)];
+                            }
+                        }
+
+                        el.textContent = out;
+
+                        if (frame >= steps) {
+                            clearInterval(timer);
+                            el.textContent = target;
+                        }
+                    }, frameMs);
+                }
+
+                function cycle() {
+                    const next = (index + 1) % messages.length;
+                    index = next;
+                    scrambleTo(messages[next]);
+                }
+
+                // Start with first phrase instantly
+                el.textContent = messages[0];
+                // then spin to next ones
+                setInterval(cycle, 2600);
+            })();
+
+            initConnectedParticles();
+            loadSoundPrefs();
+            updateSoundButtonUI();
+
+            // Premium click feedback (emoji burst)
+            (() => {
+                const emojiPool = ['🔥', '💥', '⚡️', '🟥', '🎯', '💢', '🔴'];
+
+                function spawnEmojiBurst(x, y, count = 5) {
+                    const safeX = Number.isFinite(x) ? x : window.innerWidth / 2;
+                    const safeY = Number.isFinite(y) ? y : window.innerHeight / 2;
+
+                    for (let i = 0; i < count; i++) {
+                        const el = document.createElement('div');
+                        el.className = 'emoji-burst';
+
+                        const emoji = emojiPool[Math.floor(Math.random() * emojiPool.length)];
+                        el.textContent = emoji;
+                        el.style.setProperty('--x', safeX + 'px');
+                        el.style.setProperty('--y', safeY + 'px');
+
+                        const dx = (Math.random() - 0.5) * 60;
+                        const dy = (-10 - Math.random() * 45);
+                        el.style.setProperty('--dx', dx + 'px');
+                        el.style.setProperty('--dy', dy + 'px');
+
+                        document.body.appendChild(el);
+                        setTimeout(() => el.remove(), 900);
+                    }
+                }
+
+                document.addEventListener('click', (e) => {
+                    const btn = e.target && e.target.closest
+                        ? e.target.closest('.btn, .tab-btn, .menu-btn, .sound-toggle-btn, .shoulder-btn')
+                        : null;
+                    if (!btn) return;
+                    if (e.defaultPrevented) return;
+
+                    const r = btn.getBoundingClientRect();
+                    const x = r.left + r.width / 2;
+                    const y = r.top + r.height / 2;
+                    const burstCount = 4 + Math.floor(Math.random() * 4);
+                    spawnEmojiBurst(x, y, burstCount);
+                }, { passive: true });
+            })();
+
+            // Was a login just completed? If yes, request sound on index.
+            try {
+                if (localStorage.getItem('playLoginSuccessSound') === '1') {
+                    pendingLoginSuccessSound = true;
+                    localStorage.removeItem('playLoginSuccessSound');
+
+                    // User intent: play sound on index open.
+                    // We mark sound as enabled and immediately attempt playback.
+                    soundEnabled = true;
+                    saveSoundPrefs();
+                }
+            } catch (e) {}
+
+            // Button to enable sound (user gesture)
+            const soundBtn = document.getElementById('sound-toggle');
+            if (soundBtn) {
+                soundBtn.addEventListener('click', async () => {
+                    if (!soundEnabled) {
+                        soundEnabled = true;
+                        saveSoundPrefs();
+                        updateSoundButtonUI();
+                    }
+
+                    // "Unlock" audio on gesture for Chrome/Edge and (if needed) play login sound.
+                    const sound = document.getElementById('success-sound');
+                    if (sound) {
+                        try {
+                            // If login requested sound, play it NOW within this user gesture.
+                            if (pendingLoginSuccessSound) {
+                                try { sound.load(); } catch (e) {}
+                                sound.pause();
+                                sound.currentTime = 0;
+                                sound.volume = 1.0;
+                                sound.muted = false;
+                                await sound.play();
+                                pendingLoginSuccessSound = false;
+                            } else {
+                                // Otherwise just unlock audio for later usage.
+                                await sound.play();
+                                sound.pause();
+                                sound.currentTime = 0;
+                            }
+                        } catch (e) {}
+                    }
+                });
+            }
+
+            // Tab functionality
+            const mainContainer = document.querySelector('.main-container');
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            const aboutTabButton = Array.from(tabButtons).find(b => b.dataset.tab === 'about');
+            const headshotTabButton = Array.from(tabButtons).find(b => b.dataset.tab === 'headshot');
+            const backButton = document.getElementById('about-back-btn');
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    document.querySelectorAll('.tab-content').forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    document.getElementById(button.dataset.tab).classList.add('active');
+                    // About tab pe: console & top-row hide + About button hide, Back dikhaye
+                    if (button.dataset.tab === 'about') {
+                        if (mainContainer) mainContainer.classList.add('about-view');
+                        if (aboutTabButton) aboutTabButton.style.display = 'none';
+                        if (backButton) backButton.style.display = 'inline-flex';
+                    } else {
+                        if (mainContainer) mainContainer.classList.remove('about-view');
+                        if (aboutTabButton) aboutTabButton.style.display = 'inline-flex';
+                        if (backButton) backButton.style.display = 'none';
+                    }
+                });
+            });
+
+            if (backButton && headshotTabButton) {
+                backButton.addEventListener('click', () => {
+                    // Headshot tab ko programmatically select karo
+                    headshotTabButton.click();
+                });
+            }
+
+            // Button groups (remaining Connect/Bypass etc)
+            const btnGroups = document.querySelectorAll('.btn-group');
+            btnGroups.forEach(group => {
+                const buttons = group.querySelectorAll('.btn');
+                buttons.forEach(button => {
+                    button.addEventListener('click', () => {
+                        buttons.forEach(btn => {
+                            btn.classList.remove('btn-primary');
+                            btn.classList.add('btn-secondary');
+                        });
+                        button.classList.remove('btn-secondary');
+                        button.classList.add('btn-primary');
+                    });
+                });
+            });
+
+            // Toggle switch handler
+            document.querySelectorAll('.toggle-input').forEach(toggle => {
+                toggle.addEventListener('change', function() {
+                    const onCmd = this.dataset.onCmd;
+                    const offCmd = this.dataset.offCmd;
+                    const type = this.dataset.type || 'cmd';
+                    const cmd = this.checked ? onCmd : offCmd;
+                    if (type === 'notification') {
+                        updateNotificationSettings(this.checked ? 'notification' : 'off');
+                        return;
+                    }
+                    if (type === 'esp') sendEspCommand(cmd);
+                    else sendCommand(cmd);
+                });
+            });
+            
+            // Console toggle
+            const consoleHeader = document.querySelector('.console-header');
+            const consoleBody = document.querySelector('.console-body');
+            const consoleIcon = consoleHeader.querySelector('i');
+            consoleHeader.addEventListener('click', () => {
+                consoleBody.classList.toggle('hidden');
+                consoleIcon.classList.toggle('collapsed');
+            });
+            
+            // Shoulder menu
+            const shoulderMenu = document.getElementById('shoulder-menu');
+            const shoulderBtn = document.getElementById('shoulder-btn');
+            shoulderBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                shoulderMenu.classList.toggle('open');
+            });
+            document.addEventListener('click', () => shoulderMenu.classList.remove('open'));
+            shoulderMenu.addEventListener('click', (e) => e.stopPropagation());
+            
+            // Initialize UI
+            updateNotificationUI();
+            updateEspUI();
+            initHotkeyDisplays();
+            
+            // Hide ESP features if disabled
+            if (!settings.espEnabled) {
+                document.querySelectorAll('.esp-feature').forEach(feature => {
+                    feature.style.display = 'none';
+                });
+            }
+            
+            // Set initial hotkey dropdown values
+            document.getElementById('hotkey-scan').value = settings.hotkeyBindings.scan;
+            document.getElementById('hotkey-neck').value = settings.hotkeyBindings.neck;
+            document.getElementById('hotkey-default').value = settings.hotkeyBindings.default;
+            document.getElementById('hotkey-hs-on').value = settings.hotkeyBindings.hsOn;
+            document.getElementById('hotkey-hs-off').value = settings.hotkeyBindings.hsOff;
+            
+            // Start player status monitoring
+            startStatusMonitor();
+
+            // Play login success sound on index load (if requested by login)
+            // Note: if sound isn't enabled yet, user can click the button to play.
+            updateSoundButtonUI();
+            setupAutoplayFallbackGestures();
+            tryAutoplayBurst();
+
+            // Top menu: logout + about devs
+            const menuBtn = document.querySelector('.menu-btn');
+            const menu = document.getElementById('top-menu');
+            const devsModal = document.getElementById('devs-modal');
+            const devsClose = document.getElementById('devs-close');
+
+            if (menuBtn && menu) {
+                menuBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    menu.classList.toggle('open');
+                });
+
+                document.addEventListener('click', () => {
+                    menu.classList.remove('open');
+                });
+
+                menu.addEventListener('click', (e) => e.stopPropagation());
+
+                // Logout
+                const logoutItem = document.getElementById('menu-logout');
+                if (logoutItem) {
+                    logoutItem.addEventListener('click', () => {
+                        window.location.href = '/logout';
+                    });
+                }
+
+                // About devs
+                const devsItem = document.getElementById('menu-devs');
+                const openDevs = () => {
+                    if (devsModal) {
+                        devsModal.classList.add('open');
+                        menu.classList.remove('open');
+                    }
+                };
+
+                if (devsItem) {
+                    devsItem.addEventListener('click', openDevs);
+                }
+
+                if (devsModal) {
+                    devsModal.addEventListener('click', (e) => {
+                        if (e.target === devsModal) devsModal.classList.remove('open');
+                    });
+                }
+                if (devsClose) {
+                    devsClose.addEventListener('click', () => {
+                        devsModal.classList.remove('open');
+                    });
+                }
+
+                // Keyboard shortcuts
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape') {
+                        if (devsModal && devsModal.classList.contains('open')) {
+                            devsModal.classList.remove('open');
+                        } else {
+                            window.location.href = '/logout';
+                        }
+                    }
+                    if (e.key === 'F3') {
+                        e.preventDefault();
+                        openDevs();
+                    }
+                });
+            }
+
+            updateConsole("Welcome to ANSARI CHEATS!");
+        });
+    </script>
+</body>
+</html>
